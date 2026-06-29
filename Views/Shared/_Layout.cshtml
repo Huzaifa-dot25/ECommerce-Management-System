@@ -3,31 +3,31 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - E-Shop Management System</title>
+    <title>@ViewData["Title"] - E-Shop</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/E_com.styles.css" asp-append-version="true" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header class="sticky-top bg-white border-bottom shadow-sm">
-        <nav class="navbar navbar-expand-lg navbar-light bg-white py-3">
+    <header class="sticky-top bg-white border-bottom">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white py-4">
             <div class="container">
-                <a class="navbar-brand fw-bold text-primary d-flex align-items-center fs-4" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="fa-solid fa-bag-shopping me-2"></i>E-Shop
+                <a class="navbar-brand text-primary d-flex align-items-center fs-4" asp-area="" asp-controller="Home" asp-action="Index" style="font-family: 'Playfair Display', serif; font-weight: 700; letter-spacing: 0.05em;">
+                    E-SHOP
                 </a>
                 <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse" id="navbarContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-5">
                         <li class="nav-item">
-                            <a class="nav-link text-dark fw-medium px-3" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark px-3 text-uppercase" style="font-size: 0.85rem; letter-spacing: 0.1em;" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark fw-medium px-3" asp-controller="Shop" asp-action="Index">Shop</a>
+                            <a class="nav-link text-dark px-3 text-uppercase" style="font-size: 0.85rem; letter-spacing: 0.1em;" asp-controller="Shop" asp-action="Index">Collection</a>
                         </li>
                     </ul>
                     <partial name="_LoginPartial" />
@@ -36,19 +36,19 @@
         </nav>
     </header>
     <div class="container">
-        <main role="main" class="pb-3">
+        <main role="main" class="pb-5 pt-4">
             @RenderBody()
         </main>
     </div>
 
     <!-- Toast Notification Container -->
-    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100;">
+    <div class="toast-container position-fixed bottom-0 end-0 p-4" style="z-index: 1100;">
         @if (TempData["SuccessMessage"] != null)
         {
-            <div id="successToast" class="toast align-items-center text-white bg-success border-0 shadow" role="alert" aria-live="assertive" aria-atomic="true">
+            <div id="successToast" class="toast align-items-center text-white bg-dark border-0 shadow-sm" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="d-flex">
-                    <div class="toast-body">
-                        <i class="fa-solid fa-circle-check me-2"></i> @TempData["SuccessMessage"]
+                    <div class="toast-body" style="font-family: 'Montserrat', sans-serif;">
+                        <i class="fa-solid fa-check me-2" style="color: var(--accent-color);"></i> @TempData["SuccessMessage"]
                     </div>
                     <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
@@ -56,10 +56,10 @@
         }
         @if (TempData["ErrorMessage"] != null)
         {
-            <div id="errorToast" class="toast align-items-center text-white bg-danger border-0 shadow" role="alert" aria-live="assertive" aria-atomic="true">
+            <div id="errorToast" class="toast align-items-center text-white bg-dark border-0 shadow-sm" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="d-flex">
-                    <div class="toast-body">
-                        <i class="fa-solid fa-triangle-exclamation me-2"></i> @TempData["ErrorMessage"]
+                    <div class="toast-body" style="font-family: 'Montserrat', sans-serif;">
+                        <i class="fa-solid fa-triangle-exclamation me-2 text-danger"></i> @TempData["ErrorMessage"]
                     </div>
                     <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
@@ -67,9 +67,11 @@
         }
     </div>
 
-    <footer class="border-top footer text-muted bg-light py-4 mt-5">
+    <footer class="footer text-muted bg-white py-5 mt-5">
         <div class="container text-center">
-            &copy; 2026 - E-Shop Management System - <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-decoration-none">Privacy</a>
+            <h5 class="mb-3" style="font-family: 'Playfair Display', serif; color: var(--primary-color);">E-SHOP</h5>
+            <p class="small text-uppercase tracking-wider mb-2">&copy; 2026 - E-Shop Management System</p>
+            <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-decoration-none text-muted small tracking-wider text-uppercase">Privacy Policy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
