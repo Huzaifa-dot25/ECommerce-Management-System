@@ -1,0 +1,124 @@
+@model E_com.ViewModels.HomeIndexViewModel
+@{
+    ViewData["Title"] = "Premium E-Shop";
+}
+
+<!-- Hero Section -->
+<section class="py-5 bg-gradient-primary text-white text-center rounded-4 shadow-sm mb-5 position-relative overflow-hidden">
+    <div class="py-5 position-relative z-index-1">
+        <h1 class="display-3 fw-bold mb-3 animate__animated animate__fadeInDown">Welcome to E-Shop</h1>
+        <p class="lead mb-4 opacity-75 animate__animated animate__fadeInUp">Discover our curated collection of premium products at unmatched prices.</p>
+        <div class="animate__animated animate__fadeInUp">
+            <a asp-controller="Shop" asp-action="Index" class="btn btn-light text-primary btn-lg px-5 py-3 rounded-pill fw-bold shadow-sm">
+                Shop Now <i class="fa fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold text-dark mb-0">Browse Categories</h3>
+        <a asp-controller="Shop" asp-action="Index" class="text-primary text-decoration-none fw-semibold">View All <i class="fa fa-chevron-right ms-1 small"></i></a>
+    </div>
+    
+    <div class="row g-4">
+        @if (!Model.Categories.Any())
+        {
+            <div class="col-12 text-center text-muted py-4">
+                <p>No categories available at the moment.</p>
+            </div>
+        }
+        else
+        {
+            foreach (var category in Model.Categories)
+            {
+                <div class="col-6 col-md-3">
+                    <a asp-controller="Shop" asp-action="Index" asp-route-categoryId="@category.Id" class="text-decoration-none">
+                        <div class="card border-0 text-center card-hover rounded-4 p-3 bg-white shadow-sm">
+                            <div class="mb-3 mx-auto" style="width: 80px; height: 80px;">
+                                <img src="@(string.IsNullOrEmpty(category.ImagePath) ? "https://placehold.co/100x100?text=Cat" : category.ImagePath)" 
+                                     class="w-100 h-100 object-fit-cover rounded-circle border p-1" 
+                                     alt="@category.Name"
+                                     onerror="this.src='https://placehold.co/100x100?text=Cat'" />
+                            </div>
+                            <h6 class="fw-bold text-dark mb-0 text-truncate">@category.Name</h6>
+                            <span class="text-muted small">@category.Products.Count() Products</span>
+                        </div>
+                    </a>
+                </div>
+            }
+        }
+    </div>
+</section>
+
+<!-- Featured Products Section -->
+<section class="mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold text-dark mb-0">Featured Products</h3>
+        <a asp-controller="Shop" asp-action="Index" class="text-primary text-decoration-none fw-semibold">Explore Shop <i class="fa fa-chevron-right ms-1 small"></i></a>
+    </div>
+
+    <div class="row g-4">
+        @if (!Model.FeaturedProducts.Any())
+        {
+            <div class="col-12 text-center text-muted py-5">
+                <i class="fa fa-box-open fa-3x mb-3 opacity-50"></i>
+                <p class="mb-0">Check back later for featured items!</p>
+            </div>
+        }
+        else
+        {
+            foreach (var product in Model.FeaturedProducts)
+            {
+                var primaryImage = product.ProductImages.FirstOrDefault(i => i.IsPrimary) ?? product.ProductImages.FirstOrDefault();
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden card-hover d-flex flex-column">
+                        <!-- Product Image & Badges -->
+                        <div class="position-relative bg-light" style="padding-top: 100%;">
+                            <img src="@(primaryImage != null ? primaryImage.ImagePath : "/images/placeholder-product.png")" 
+                                 class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover" 
+                                 alt="@product.Name"
+                                 onerror="this.src='https://placehold.co/300x300?text=Product'" />
+                            
+                            @if (product.Discount > 0)
+                            {
+                                <span class="position-absolute top-0 start-0 m-3 badge bg-danger rounded-pill px-3 py-1.5 fw-bold bg-gradient">
+                                    -@product.Discount.ToString("F0")%
+                                </span>
+                            }
+                        </div>
+
+                        <!-- Product details -->
+                        <div class="card-body p-4 d-flex flex-column flex-grow-1">
+                            <span class="text-muted small text-uppercase fw-semibold tracking-wider">@product.Brand</span>
+                            <h5 class="card-title fw-bold text-dark mt-1 mb-2 text-truncate-2" style="height: 48px; line-height: 24px;">
+                                <a asp-controller="Shop" asp-action="Details" asp-route-id="@product.Id" class="text-dark text-decoration-none">
+                                    @product.Name
+                                </a>
+                            </h5>
+                            
+                            <div class="mt-auto pt-3 border-top d-flex justify-content-between align-items-center">
+                                <div>
+                                    @if (product.Discount > 0)
+                                    {
+                                        <span class="fw-bold text-primary fs-5">$@product.DiscountedPrice.ToString("F2")</span>
+                                        <span class="text-decoration-line-through text-muted small ms-1">$@product.Price.ToString("F2")</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="fw-bold text-dark fs-5">$@product.Price.ToString("F2")</span>
+                                    }
+                                </div>
+                                <a asp-controller="Shop" asp-action="Details" asp-route-id="@product.Id" class="btn btn-outline-primary rounded-circle p-2" style="width: 38px; height: 38px; display: inline-flex; justify-content: center; align-items: center;" title="View Details">
+                                    <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</section>

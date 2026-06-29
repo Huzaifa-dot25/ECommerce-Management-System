@@ -1,0 +1,282 @@
+@model E_com.Models.Product
+@{
+    ViewData["Title"] = Model.Name;
+    var reviews = ViewBag.Reviews as List<E_com.Models.Review> ?? new List<E_com.Models.Review>();
+    var averageRating = (double)ViewBag.AverageRating;
+    var relatedProducts = ViewBag.RelatedProducts as List<E_com.Models.Product> ?? new List<E_com.Models.Product>();
+}
+
+<div class="container py-5">
+    <div class="row mb-5">
+        <!-- Images Column -->
+        <div class="col-md-6 mb-4 mb-md-0">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-light p-3">
+                @if (Model.ProductImages != null && Model.ProductImages.Any())
+                {
+                    <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner rounded-3" style="max-height: 500px;">
+                            @for (int i = 0; i < Model.ProductImages.Count; i++)
+                            {
+                                var img = Model.ProductImages.ElementAt(i);
+                                <div class="carousel-item @(i == 0 ? "active" : "")">
+                                    <img src="@img.ImagePath" class="d-block w-100 object-fit-cover" style="height: 450px;" alt="Product image" onerror="this.src='https://placehold.co/500x500?text=Product'" />
+                                </div>
+                            }
+                        </div>
+                        @if (Model.ProductImages.Count > 1)
+                        {
+                            <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <img src="/images/placeholder-product.png" class="img-fluid rounded-3" alt="No image available" onerror="this.src='https://placehold.co/500x500?text=Product'" />
+                }
+            </div>
+        </div>
+
+        <!-- Product Metadata Column -->
+        <div class="col-md-6">
+            <div class="ps-md-4">
+                <span class="text-primary fw-bold text-uppercase small tracking-wider">@Model.Brand</span>
+                <h1 class="fw-bold text-dark mt-1 mb-2">@Model.Name</h1>
+
+                <!-- Rating -->
+                <div class="d-flex align-items-center mb-3">
+                    <div class="rating-stars me-2">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            if (i <= Math.Round(averageRating))
+                            {
+                                <i class="fa-solid fa-star"></i>
+                            }
+                            else
+                            {
+                                <i class="fa-regular fa-star"></i>
+                            }
+                        }
+                    </div>
+                    <span class="text-muted small">(@reviews.Count reviews)</span>
+                </div>
+
+                <!-- Price and Discounts -->
+                <div class="mb-4 py-3 border-top border-bottom">
+                    @if (Model.Discount > 0)
+                    {
+                        <div class="d-flex align-items-center">
+                            <span class="fs-2 fw-bold text-primary">$@Model.DiscountedPrice.ToString("F2")</span>
+                            <span class="fs-5 text-decoration-line-through text-muted ms-3">$@Model.Price.ToString("F2")</span>
+                            <span class="badge bg-danger ms-3 rounded-pill px-3 py-2 bg-gradient">Save @Model.Discount.ToString("F0")%</span>
+                        </div>
+                    }
+                    else
+                    {
+                        <span class="fs-2 fw-bold text-dark">$@Model.Price.ToString("F2")</span>
+                    }
+                </div>
+
+                <!-- Product Specifications -->
+                <table class="table table-sm table-borderless mb-4 text-muted">
+                    <tbody>
+                        <tr>
+                            <td class="fw-semibold text-dark" style="width: 120px;">SKU:</td>
+                            <td><code>@Model.SKU</code></td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold text-dark">Category:</td>
+                            <td>@(Model.Category?.Name ?? "Uncategorized")</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold text-dark">Availability:</td>
+                            <td>
+                                @if (Model.StockQuantity > 0)
+                                {
+                                    <span class="text-success fw-bold"><i class="fa fa-check-circle me-1"></i> In Stock (@Model.StockQuantity units)</span>
+                                }
+                                else
+                                {
+                                    <span class="text-danger fw-bold"><i class="fa fa-times-circle me-1"></i> Out of Stock</span>
+                                }
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Actions Form (Add to Cart / Wishlist) -->
+                <form asp-controller="Cart" asp-action="AddToCart" method="post" class="mb-4">
+                    <input type="hidden" name="productId" value="@Model.Id" />
+                    
+                    <div class="row g-3 align-items-center mb-4">
+                        <div class="col-auto">
+                            <label for="quantityInput" class="form-label mb-0 fw-semibold text-muted">Quantity:</label>
+                        </div>
+                        <div class="col-3">
+                            <input type="number" id="quantityInput" name="quantity" class="form-control" value="1" min="1" max="@(Model.StockQuantity > 0 ? Model.StockQuantity : 1)" @(Model.StockQuantity <= 0 ? "disabled" : "") />
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg flex-grow-1 py-3 rounded-3 fw-bold bg-gradient shadow-sm" @(Model.StockQuantity <= 0 ? "disabled" : "")>
+                            <i class="fa fa-shopping-cart me-2"></i>Add to Cart
+                        </button>
+                        
+                        <button type="submit" asp-controller="Wishlist" asp-action="Add" asp-route-productId="@Model.Id" class="btn btn-outline-danger btn-lg px-4 py-3 rounded-3" title="Add to Wishlist">
+                            <i class="fa-regular fa-heart"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Description & Reviews Tabs -->
+    <div class="card border-0 shadow-sm rounded-4 mb-5">
+        <div class="card-header bg-white py-3">
+            <ul class="nav nav-tabs card-header-tabs border-0" id="productTabs" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active fw-bold text-dark border-0 py-2.5 px-4" id="desc-tab" data-bs-toggle="tab" data-bs-target="#desc-content" type="button" role="tab" aria-controls="desc-content" aria-selected="true">
+                        Description
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link fw-bold text-dark border-0 py-2.5 px-4" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews-content" type="button" role="tab" aria-controls="reviews-content" aria-selected="false">
+                        Reviews (@reviews.Count)
+                    </button>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body p-4">
+            <div class="tab-content" id="productTabsContent">
+                <!-- Description Pane -->
+                <div class="tab-pane fade show active text-muted" id="desc-content" role="tabpanel" aria-labelledby="desc-tab">
+                    <p style="white-space: pre-line; line-height: 1.6;">@Model.Description</p>
+                </div>
+
+                <!-- Reviews Pane -->
+                <div class="tab-pane fade" id="reviews-content" role="tabpanel" aria-labelledby="reviews-tab">
+                    <div class="row">
+                        <!-- Review list -->
+                        <div class="col-lg-7 mb-4 mb-lg-0">
+                            <h5 class="fw-bold mb-4">Customer Reviews</h5>
+                            @if (!reviews.Any())
+                            {
+                                <div class="text-center py-4 text-muted">
+                                    <i class="fa-regular fa-comments fa-2x mb-2 opacity-50"></i>
+                                    <p class="mb-0">No reviews yet for this product. Be the first to write a review!</p>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="d-flex flex-column gap-3">
+                                    @foreach (var review in reviews)
+                                    {
+                                        <div class="border-bottom pb-3">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <h6 class="fw-bold mb-0 text-dark">@(review.User?.FullName ?? "Anonymous")</h6>
+                                                <span class="text-muted small">@review.ReviewDate.ToString("MMM dd, yyyy")</span>
+                                            </div>
+                                            <div class="rating-stars small mb-2">
+                                                @for (int i = 1; i <= 5; i++)
+                                                {
+                                                    if (i <= review.Rating)
+                                                    {
+                                                        <i class="fa-solid fa-star"></i>
+                                                    }
+                                                    else
+                                                    {
+                                                        <i class="fa-regular fa-star"></i>
+                                                    }
+                                                }
+                                            </div>
+                                            <p class="text-muted mb-0">@review.Comment</p>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Write Review form -->
+                        <div class="col-lg-5 ps-lg-4 border-start-lg">
+                            <h5 class="fw-bold mb-4">Write a Review</h5>
+                            @if (User.Identity?.IsAuthenticated == true)
+                            {
+                                <form asp-controller="Reviews" asp-action="AddReview" method="post">
+                                    <input type="hidden" name="productId" value="@Model.Id" />
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Rating</label>
+                                        <select name="rating" class="form-select bg-light" required>
+                                            <option value="5">5 Stars (Excellent)</option>
+                                            <option value="4">4 Stars (Good)</option>
+                                            <option value="3">3 Stars (Average)</option>
+                                            <option value="2">2 Stars (Poor)</option>
+                                            <option value="1">1 Star (Very Bad)</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Comment</label>
+                                        <textarea name="comment" class="form-control bg-light" rows="4" placeholder="Your review..." required></textarea>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary px-4 py-2.5 rounded-3 fw-bold bg-gradient shadow-sm">Submit Review</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <div class="alert alert-info border-0 rounded-3 p-4 shadow-sm text-center">
+                                    <i class="fa fa-info-circle fa-2x mb-3 text-primary"></i>
+                                    <h6>Sign In to Leave a Review</h6>
+                                    <p class="text-muted small">Only registered customers can write product reviews.</p>
+                                    <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Context.Request.Path" class="btn btn-sm btn-primary px-4 py-2 rounded-3 fw-bold bg-gradient mt-2">Login Now</a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    @if (relatedProducts.Any())
+    {
+        <div class="mb-5">
+            <h3 class="fw-bold text-dark mb-4">Related Products</h3>
+            <div class="row g-4">
+                @foreach (var prod in relatedProducts)
+                {
+                    var prodImg = prod.ProductImages.FirstOrDefault(i => i.IsPrimary) ?? prod.ProductImages.FirstOrDefault();
+                    <div class="col-6 col-md-3">
+                        <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden card-hover d-flex flex-column">
+                            <div class="position-relative bg-light" style="padding-top: 100%;">
+                                <img src="@(prodImg != null ? prodImg.ImagePath : "/images/placeholder-product.png")" 
+                                     class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover" 
+                                     alt="@prod.Name"
+                                     onerror="this.src='https://placehold.co/300x300?text=Product'" />
+                            </div>
+                            <div class="card-body p-3 d-flex flex-column flex-grow-1">
+                                <span class="text-muted small">@prod.Brand</span>
+                                <h6 class="fw-bold text-dark mt-1 mb-2 text-truncate-2" style="height: 38px;">
+                                    <a asp-action="Details" asp-route-id="@prod.Id" class="text-dark text-decoration-none">@prod.Name</a>
+                                </h6>
+                                <div class="mt-auto pt-2 border-top d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold text-primary">$@prod.DiscountedPrice.ToString("F2")</span>
+                                    <a asp-action="Details" asp-route-id="@prod.Id" class="btn btn-sm btn-outline-primary rounded-circle" style="width: 28px; height: 28px; display: inline-flex; justify-content: center; align-items: center;"><i class="fa fa-arrow-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>

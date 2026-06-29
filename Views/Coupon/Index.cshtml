@@ -1,0 +1,89 @@
+@model IEnumerable<E_com.Models.Coupon>
+@{
+    ViewData["Title"] = "Coupons Management";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-dark mb-1">Coupons</h2>
+            <p class="text-muted mb-0">Create and manage discount codes for checkout</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary bg-gradient rounded-3 px-4 py-2 fw-semibold">
+            <i class="fa fa-plus me-2"></i>Create Coupon
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light text-uppercase fs-7 text-muted fw-semibold">
+                        <tr>
+                            <th class="ps-4">Code</th>
+                            <th>Discount (%)</th>
+                            <th>Expiry Date</th>
+                            <th>Status</th>
+                            <th class="text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Any())
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="fa fa-ticket fa-3x mb-3 opacity-50"></i>
+                                    <p class="mb-0">No coupons found. Click 'Create Coupon' to add one.</p>
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            foreach (var coupon in Model)
+                            {
+                                var isExpired = coupon.ExpiryDate < DateTime.UtcNow;
+                                <tr>
+                                    <td class="ps-4">
+                                        <code class="text-primary bg-primary-subtle px-3 py-1.5 rounded fw-bold">@coupon.CouponCode</code>
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold text-dark">@coupon.DiscountPercentage.ToString("F0")%</span>
+                                    </td>
+                                    <td class="@(isExpired ? "text-danger fw-semibold" : "text-muted")">
+                                        @coupon.ExpiryDate.ToString("MMM dd, yyyy") 
+                                        @if (isExpired)
+                                        {
+                                            <span class="badge bg-danger ms-1 small">Expired</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (coupon.Status && !isExpired)
+                                        {
+                                            <span class="badge bg-success-subtle text-success badge-pill py-1.5 px-3">Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary-subtle text-secondary badge-pill py-1.5 px-3">Inactive</span>
+                                        }
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <div class="d-inline-flex gap-2">
+                                            <a asp-action="Edit" asp-route-id="@coupon.Id" class="btn btn-sm btn-outline-secondary rounded-2" title="Edit">
+                                                <i class="fa fa-pencil"></i>
+                                            </a>
+                                            <form asp-action="Delete" asp-route-id="@coupon.Id" method="post" onsubmit="return confirm('Are you sure you want to delete this coupon?');" class="d-inline">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-2" title="Delete">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,90 @@
+@model E_com.Models.Order
+@{
+    ViewData["Title"] = "Order Confirmation";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 p-5 text-center mb-4">
+                <div class="mb-4">
+                    <i class="fa-solid fa-circle-check fa-4x text-success animate__animated animate__bounceIn"></i>
+                </div>
+                <h2 class="fw-bold text-dark mb-2">Thank You for Your Order!</h2>
+                <p class="text-muted fs-5 mb-4">Your order has been successfully placed and is being processed.</p>
+                
+                <div class="row g-3 bg-light rounded-3 p-3 text-start mb-4">
+                    <div class="col-6 col-md-3">
+                        <span class="text-muted small d-block">Order Number:</span>
+                        <code class="text-dark fw-bold">@Model.OrderNumber</code>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <span class="text-muted small d-block">Order Date:</span>
+                        <span class="text-dark fw-bold">@Model.OrderDate.ToString("MMM dd, yyyy")</span>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <span class="text-muted small d-block">Total Amount:</span>
+                        <span class="text-primary fw-bold">$@Model.TotalAmount.ToString("F2")</span>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <span class="text-muted small d-block">Payment Method:</span>
+                        <span class="text-dark fw-bold">@(Model.Payment?.PaymentMethod ?? "COD")</span>
+                    </div>
+                </div>
+
+                <div class="text-start mb-4">
+                    <h5 class="fw-bold text-dark mb-3">Shipping Address Details</h5>
+                    <div class="p-3 border rounded-3 text-muted">
+                        <p class="mb-1"><span class="fw-semibold text-dark">Address:</span> @Model.ShippingAddress</p>
+                        <p class="mb-1"><span class="fw-semibold text-dark">City:</span> @Model.City, @Model.PostalCode</p>
+                        <p class="mb-0"><span class="fw-semibold text-dark">Phone:</span> @Model.Phone</p>
+                    </div>
+                </div>
+
+                <div class="text-start mb-4">
+                    <h5 class="fw-bold text-dark mb-3">Items Summary</h5>
+                    <div class="card border rounded-3 overflow-hidden">
+                        <div class="table-responsive">
+                            <table class="table align-middle mb-0">
+                                <thead class="table-light fs-7 text-muted fw-semibold">
+                                    <tr>
+                                        <th class="ps-3">Item</th>
+                                        <th>Quantity</th>
+                                        <th class="text-end pe-3">Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.OrderItems)
+                                    {
+                                        var discPrice = item.UnitPrice - (item.UnitPrice * (item.Discount / 100));
+                                        <tr>
+                                            <td class="ps-3">
+                                                <div class="d-flex align-items-center">
+                                                    <div>
+                                                        <h6 class="fw-semibold mb-0 text-dark">@item.Product?.Name</h6>
+                                                        <span class="text-muted small">Brand: @item.Product?.Brand</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>@item.Quantity</td>
+                                            <td class="text-end pe-3 fw-bold text-dark">$@((discPrice * item.Quantity).ToString("F2"))</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-center gap-2 mt-2">
+                    <a asp-controller="Shop" asp-action="Index" class="btn btn-primary px-4 py-2.5 rounded-3 fw-bold bg-gradient shadow-sm">
+                        <i class="fa fa-shopping-bag me-1"></i>Continue Shopping
+                    </a>
+                    <a asp-controller="Orders" asp-action="MyOrders" class="btn btn-outline-secondary px-4 py-2.5 rounded-3 fw-semibold">
+                        <i class="fa fa-list me-1"></i>View My Orders
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,132 @@
+@model E_com.Models.ShoppingCart
+@{
+    ViewData["Title"] = "Shopping Cart";
+    decimal subTotal = Model.CartItems.Sum(ci => ci.Product!.DiscountedPrice * ci.Quantity);
+}
+
+<div class="container py-5">
+    <h2 class="fw-bold text-dark mb-4"><i class="fa fa-shopping-cart text-primary me-2"></i>Shopping Cart</h2>
+
+    @if (!Model.CartItems.Any())
+    {
+        <div class="card border-0 shadow-sm rounded-4 p-5 text-center my-4">
+            <div class="mb-4">
+                <i class="fa-solid fa-basket-shopping fa-4x text-muted opacity-50"></i>
+            </div>
+            <h4 class="fw-bold text-dark">Your Cart is Empty</h4>
+            <p class="text-muted mb-4">You haven't added any products to your cart yet.</p>
+            <div>
+                <a asp-controller="Shop" asp-action="Index" class="btn btn-primary px-4 py-2.5 rounded-3 fw-bold bg-gradient shadow-sm">
+                    <i class="fa fa-shopping-bag me-2"></i>Start Shopping
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <!-- Items List -->
+            <div class="col-lg-8 mb-4">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light text-uppercase fs-7 text-muted fw-semibold">
+                                <tr>
+                                    <th class="ps-4" style="width: 400px;">Product</th>
+                                    <th>Quantity</th>
+                                    <th>Total Price</th>
+                                    <th class="text-end pe-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.CartItems)
+                                {
+                                    var primaryImage = item.Product?.ProductImages?.FirstOrDefault(pi => pi.IsPrimary) ?? item.Product?.ProductImages?.FirstOrDefault();
+                                    <tr>
+                                        <td class="ps-4">
+                                            <div class="d-flex align-items-center">
+                                                <img src="@(primaryImage != null ? primaryImage.ImagePath : "/images/placeholder-product.png")" 
+                                                     class="rounded-3 border object-fit-cover me-3" 
+                                                     style="width: 60px; height: 60px;" 
+                                                     alt="@item.Product?.Name" 
+                                                     onerror="this.src='https://placehold.co/100x100?text=Product'"/>
+                                                <div>
+                                                    <h6 class="fw-bold text-dark mb-0">
+                                                        <a asp-controller="Shop" asp-action="Details" asp-route-id="@item.ProductId" class="text-dark text-decoration-none">
+                                                            @item.Product?.Name
+                                                        </a>
+                                                    </h6>
+                                                    <span class="text-muted small">Brand: @item.Product?.Brand</span>
+                                                    <div class="mt-1">
+                                                        @if (item.Product?.Discount > 0)
+                                                        {
+                                                            <span class="text-primary fw-bold">$@item.Product.DiscountedPrice.ToString("F2")</span>
+                                                            <span class="text-decoration-line-through text-muted small ms-1">$@item.Product.Price.ToString("F2")</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="text-muted">$@item.Product?.Price.ToString("F2")</span>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <form asp-action="UpdateQuantity" method="post" class="d-flex align-items-center" style="max-width: 120px;">
+                                                <input type="hidden" name="cartItemId" value="@item.Id" />
+                                                <input type="number" name="quantity" class="form-control form-control-sm text-center" 
+                                                       value="@item.Quantity" min="1" max="@item.Product?.StockQuantity" 
+                                                       onchange="this.form.submit()" />
+                                            </form>
+                                        </td>
+                                        <td>
+                                            <span class="fw-bold text-dark">$@((item.Product!.DiscountedPrice * item.Quantity).ToString("F2"))</span>
+                                        </td>
+                                        <td class="text-end pe-4">
+                                            <form asp-action="RemoveFromCart" method="post" class="d-inline">
+                                                <input type="hidden" name="cartItemId" value="@item.Id" />
+                                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-circle p-2" style="width: 34px; height: 34px; display: inline-flex; justify-content: center; align-items: center;" title="Remove">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Card -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4 sticky-top" style="top: 90px;">
+                    <h5 class="fw-bold text-dark mb-4">Order Summary</h5>
+                    
+                    <div class="d-flex justify-content-between mb-3 text-muted">
+                        <span>Subtotal:</span>
+                        <span class="fw-semibold text-dark">$@subTotal.ToString("F2")</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3 text-muted">
+                        <span>Shipping:</span>
+                        <span class="text-success fw-bold">FREE</span>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="d-flex justify-content-between mb-4">
+                        <span class="fw-bold text-dark">Estimated Total:</span>
+                        <span class="fs-4 fw-bold text-primary">$@subTotal.ToString("F2")</span>
+                    </div>
+
+                    <a asp-controller="Checkout" asp-action="Index" class="btn btn-primary w-100 py-3 rounded-3 fw-bold bg-gradient shadow-sm mb-3">
+                        <i class="fa-solid fa-credit-card me-2"></i>Proceed to Checkout
+                    </a>
+                    <a asp-controller="Shop" asp-action="Index" class="btn btn-light w-100 py-2.5 rounded-3 fw-semibold">
+                        Continue Shopping
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

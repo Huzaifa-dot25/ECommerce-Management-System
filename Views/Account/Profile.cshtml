@@ -1,0 +1,85 @@
+@model E_com.ViewModels.ProfileViewModel
+@{
+    ViewData["Title"] = "Manage Profile";
+}
+
+<div class="container py-5">
+    <div class="row">
+        <!-- Sidebar Navigation -->
+        <div class="col-md-3 mb-4">
+            <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
+                <div class="card-body text-center bg-light py-4">
+                    <div class="position-relative d-inline-block mb-3">
+                        <img src="@(string.IsNullOrEmpty(Model.ProfilePictureUrl) ? $"https://ui-avatars.com/api/?name={Uri.EscapeDataString(Model.FullName ?? "User")}&background=0D6EFD&color=fff" : Model.ProfilePictureUrl)" 
+                             class="rounded-circle border border-3 border-white shadow-sm" 
+                             style="width: 110px; height: 110px; object-fit: cover;" 
+                             alt="Avatar" />
+                    </div>
+                    <h5 class="fw-bold mb-1">@Model.FullName</h5>
+                    <p class="text-muted small mb-0">@Model.Email</p>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a asp-action="Profile" class="list-group-item list-group-item-action active fw-semibold"><i class="fa fa-user-circle me-2"></i> Account Details</a>
+                    <a asp-action="ChangePassword" class="list-group-item list-group-item-action fw-semibold"><i class="fa fa-key me-2"></i> Change Password</a>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-controller="Admin" asp-action="Dashboard" class="list-group-item list-group-item-action text-danger fw-semibold"><i class="fa fa-dashboard me-2"></i> Admin Panel</a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Orders" asp-action="MyOrders" class="list-group-item list-group-item-action fw-semibold"><i class="fa fa-shopping-bag me-2"></i> My Orders</a>
+                        <a asp-controller="Wishlist" asp-action="Index" class="list-group-item list-group-item-action fw-semibold"><i class="fa fa-heart me-2"></i> Wishlist</a>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Edit Form -->
+        <div class="col-md-9">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-white py-3 border-0">
+                    <h4 class="mb-0 fw-bold text-dark"><i class="fa fa-id-card text-primary me-2"></i>Account Settings</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Profile" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="FullName" class="form-label fw-semibold"></label>
+                                <input asp-for="FullName" class="form-control" />
+                                <span asp-validation-for="FullName" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Email" class="form-label fw-semibold"></label>
+                                <input asp-for="Email" class="form-control bg-light" readonly />
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="PhoneNumber" class="form-label fw-semibold"></label>
+                                <input asp-for="PhoneNumber" class="form-control" placeholder="e.g. +1234567890" />
+                                <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ProfilePicture" class="form-label fw-semibold"></label>
+                                <input asp-for="ProfilePicture" type="file" class="form-control" accept="image/*" />
+                                <span asp-validation-for="ProfilePicture" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary px-4 py-2 fw-semibold"><i class="fa fa-save me-1"></i> Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
