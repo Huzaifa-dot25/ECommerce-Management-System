@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using E_com.Interfaces;
 using E_com.ViewModels;
+using System.Globalization;
 
 namespace E_com.Controllers
 {
@@ -16,16 +17,23 @@ namespace E_com.Controllers
         }
 
         public async Task<IActionResult> Index(
-            string? search, 
-            int? categoryId, 
-            decimal? minPrice, 
-            decimal? maxPrice, 
-            string? sortBy, 
-            int page = 1, 
+            string? search,
+            int? categoryId,
+            string? minPrice,   // Accept as string to avoid culture-sensitive decimal binding
+            string? maxPrice,
+            string? sortBy,
+            int page = 1,
             int pageSize = 9)
         {
+            // Parse prices with invariant culture so "50.5" always works
+            decimal? minPriceVal = decimal.TryParse(minPrice, NumberStyles.Any, CultureInfo.InvariantCulture, out var mn) ? mn : null;
+            decimal? maxPriceVal = decimal.TryParse(maxPrice, NumberStyles.Any, CultureInfo.InvariantCulture, out var mx) ? mx : null;
+
+            // Normalize empty search
+            if (string.IsNullOrWhiteSpace(search)) search = null;
+
             var (products, totalCount) = await _productService.SearchProductsAsync(
-                search, categoryId, minPrice, maxPrice, sortBy, page, pageSize);
+                search, categoryId, minPriceVal, maxPriceVal, sortBy, page, pageSize);
 
             var categories = await _categoryService.GetActiveCategoriesAsync();
 
@@ -35,8 +43,8 @@ namespace E_com.Controllers
                 Categories = categories,
                 Search = search,
                 CategoryId = categoryId,
-                MinPrice = minPrice,
-                MaxPrice = maxPrice,
+                MinPrice = minPriceVal,
+                MaxPrice = maxPriceVal,
                 SortBy = sortBy,
                 Page = page,
                 PageSize = pageSize,

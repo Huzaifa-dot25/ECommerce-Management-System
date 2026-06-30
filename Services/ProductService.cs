@@ -122,13 +122,14 @@ namespace E_com.Services
             var query = allProducts.Where(p => p.Status);
 
             // Filters
-            if (!string.IsNullOrEmpty(search))
+            if (!string.IsNullOrWhiteSpace(search))
             {
-                var lowerSearch = search.ToLower();
-                query = query.Where(p => p.Name.ToLower().Contains(lowerSearch) || 
-                                         p.Brand.ToLower().Contains(lowerSearch) || 
-                                         p.Description.ToLower().Contains(lowerSearch) ||
-                                         p.SKU.ToLower().Contains(lowerSearch));
+                var lowerSearch = search.Trim().ToLowerInvariant();
+                query = query.Where(p =>
+                    p.Name.ToLowerInvariant().Contains(lowerSearch) ||
+                    p.Brand.ToLowerInvariant().Contains(lowerSearch) ||
+                    p.SKU.ToLowerInvariant().Contains(lowerSearch) ||
+                    p.Description.ToLowerInvariant().Contains(lowerSearch));
             }
 
             if (categoryId.HasValue)

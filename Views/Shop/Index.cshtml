@@ -4,136 +4,147 @@
 }
 
 <div class="container py-5">
-    <div class="row">
-        <!-- Sidebar Filters -->
-        <div class="col-lg-3 mb-4">
-            <div class="card border-0 shadow-sm rounded-4 p-4 sticky-top" style="top: 90px; z-index: 10;">
-                <h5 class="fw-bold text-dark mb-4"><i class="fa fa-filter text-primary me-2"></i>Filters</h5>
-                
-                <form method="get" asp-action="Index">
-                    <!-- Maintain Sorting -->
-                    <input type="hidden" name="sortBy" value="@Model.SortBy" />
 
-                    <!-- Search Input -->
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold text-muted small text-uppercase">Search Keyword</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0"><i class="fa fa-search text-muted"></i></span>
-                            <input type="text" name="search" class="form-control bg-light border-start-0" placeholder="Search..." value="@Model.Search" />
-                        </div>
-                    </div>
+    <!-- Page header -->
+    <div class="mb-5">
+        <span class="section-label">Our Products</span>
+        <h1 class="section-title">The Collection</h1>
+    </div>
 
-                    <!-- Category Filter -->
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold text-muted small text-uppercase">Category</label>
-                        <select name="categoryId" class="form-select bg-light" onchange="this.form.submit()">
-                            <option value="">All Categories</option>
-                            @foreach (var cat in Model.Categories)
-                            {
-                                <option value="@cat.Id" selected="@(Model.CategoryId == cat.Id ? "selected" : null)">@cat.Name</option>
-                            }
-                        </select>
-                    </div>
+    <div class="row g-5">
 
-                    <!-- Price Filter -->
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold text-muted small text-uppercase">Price Range</label>
-                        <div class="row g-2">
-                            <div class="col-6">
-                                <input type="number" name="minPrice" class="form-control bg-light" placeholder="Min" value="@Model.MinPrice" />
-                            </div>
-                            <div class="col-6">
-                                <input type="number" name="maxPrice" class="form-control bg-light" placeholder="Max" value="@Model.MaxPrice" />
+        <!-- ── SIDEBAR FILTERS ───────────────────────────────── -->
+        <div class="col-lg-3">
+            <div class="filter-sidebar">
+                <div class="card border-0 p-4" style="box-shadow:var(--shadow-sm);">
+                    <h6 style="font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--clr-muted);margin-bottom:1.5rem;">
+                        <i class="fa fa-sliders me-2"></i>Filters
+                    </h6>
+
+                    <form method="get" asp-action="Index">
+                        <input type="hidden" name="sortBy" value="@Model.SortBy" />
+
+                        <!-- Search -->
+                        <div class="mb-4">
+                            <label class="form-label">Keyword</label>
+                            <div class="input-group">
+                                <span class="input-group-text border-end-0"><i class="fa fa-search text-muted" style="font-size:.8rem;"></i></span>
+                                <input type="text" name="search" class="form-control border-start-0" placeholder="Search products…" value="@Model.Search" style="border-left:0;" />
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Action buttons -->
-                    <button type="submit" class="btn btn-primary w-100 py-2.5 rounded-3 fw-bold bg-gradient mb-2 shadow-sm">Apply Filters</button>
-                    <a asp-action="Index" class="btn btn-light w-100 py-2.5 rounded-3 fw-semibold">Reset Filters</a>
-                </form>
-            </div>
-        </div>
+                        <!-- Category -->
+                        <div class="mb-4">
+                            <label class="form-label">Category</label>
+                            <select name="categoryId" class="form-select" onchange="this.form.submit()">
+                                <option value="">All Categories</option>
+                                @foreach (var cat in Model.Categories)
+                                {
+                                    <option value="@cat.Id" selected="@(Model.CategoryId == cat.Id ? "selected" : null)">@cat.Name</option>
+                                }
+                            </select>
+                        </div>
 
-        <!-- Product Listing Grid -->
-        <div class="col-lg-9">
-            <!-- Catalog Header with Sorting Options -->
-            <div class="card border-0 shadow-sm rounded-4 p-3 mb-4">
-                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3">
-                    <p class="text-muted mb-0">Showing <span class="text-dark fw-bold">@Model.Products.Count()</span> of <span class="text-dark fw-bold">@Model.TotalCount</span> products</p>
-                    
-                    <form method="get" asp-action="Index" class="d-flex align-items-center">
-                        <!-- Maintain other filters -->
-                        <input type="hidden" name="search" value="@Model.Search" />
-                        <input type="hidden" name="categoryId" value="@Model.CategoryId" />
-                        <input type="hidden" name="minPrice" value="@Model.MinPrice" />
-                        <input type="hidden" name="maxPrice" value="@Model.MaxPrice" />
+                        <!-- Price range -->
+                        <div class="mb-4">
+                            <label class="form-label">Price Range ($)</label>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <input type="text" inputmode="decimal" name="minPrice" class="form-control"
+                                           placeholder="Min"
+                                           value="@(Model.MinPrice.HasValue ? Model.MinPrice.Value.ToString("G", System.Globalization.CultureInfo.InvariantCulture) : "")" />
+                                </div>
+                                <div class="col-6">
+                                    <input type="text" inputmode="decimal" name="maxPrice" class="form-control"
+                                           placeholder="Max"
+                                           value="@(Model.MaxPrice.HasValue ? Model.MaxPrice.Value.ToString("G", System.Globalization.CultureInfo.InvariantCulture) : "")" />
+                                </div>
+                            </div>
+                        </div>
 
-                        <span class="text-muted small fw-semibold text-nowrap me-2">Sort By:</span>
-                        <select name="sortBy" class="form-select form-select-sm border-0 bg-light" onchange="this.form.submit()" style="width: 160px;">
-                            <option value="newest" selected="@(Model.SortBy == "newest" ? "selected" : null)">New Arrivals</option>
-                            <option value="price_asc" selected="@(Model.SortBy == "price_asc" ? "selected" : null)">Price: Low to High</option>
-                            <option value="price_desc" selected="@(Model.SortBy == "price_desc" ? "selected" : null)">Price: High to Low</option>
-                            <option value="discount" selected="@(Model.SortBy == "discount" ? "selected" : null)">Biggest Discounts</option>
-                        </select>
+                        <button type="submit" class="btn btn-primary w-100 mb-2">
+                            <i class="fa fa-check me-2"></i>Apply Filters
+                        </button>
+                        <a asp-action="Index" class="btn btn-light w-100">Reset</a>
                     </form>
                 </div>
             </div>
+        </div>
 
-            <!-- Products Grid -->
-            <div class="row g-4">
-                @if (!Model.Products.Any())
-                {
-                    <div class="col-12 text-center py-5">
-                        <div class="card border-0 shadow-sm rounded-4 py-5 text-muted">
-                            <i class="fa fa-search fa-3x mb-3 opacity-50"></i>
-                            <h4 class="fw-bold text-dark">No Products Found</h4>
-                            <p class="mb-0">Try adjusting your filters or search keywords.</p>
-                        </div>
-                    </div>
-                }
-                else
-                {
-                    foreach (var product in Model.Products)
+        <!-- ── PRODUCT GRID ──────────────────────────────────── -->
+        <div class="col-lg-9">
+
+            <!-- Toolbar: count + sort -->
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4 pb-3 border-bottom">
+                <p class="mb-0" style="font-size:.84rem;color:var(--clr-muted);">
+                    Showing
+                    <strong class="text-dark">@Model.Products.Count()</strong>
+                    of
+                    <strong class="text-dark">@Model.TotalCount</strong>
+                    products
+                </p>
+                <form method="get" asp-action="Index" class="d-flex align-items-center gap-2">
+                    <input type="hidden" name="search"     value="@Model.Search" />
+                    <input type="hidden" name="categoryId" value="@Model.CategoryId" />
+                    <input type="hidden" name="minPrice"   value="@(Model.MinPrice.HasValue ? Model.MinPrice.Value.ToString(System.Globalization.CultureInfo.InvariantCulture) : "")" />
+                    <input type="hidden" name="maxPrice"   value="@(Model.MaxPrice.HasValue ? Model.MaxPrice.Value.ToString(System.Globalization.CultureInfo.InvariantCulture) : "")" />
+                    <label style="font-size:.75rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--clr-muted);white-space:nowrap;">Sort:</label>
+                    <select name="sortBy" class="form-select form-select-sm" onchange="this.form.submit()" style="width:175px;font-size:.82rem;">
+                        <option value="newest"     selected="@(Model.SortBy=="newest"     ?"selected":null)">New Arrivals</option>
+                        <option value="price_asc"  selected="@(Model.SortBy=="price_asc"  ?"selected":null)">Price: Low → High</option>
+                        <option value="price_desc" selected="@(Model.SortBy=="price_desc" ?"selected":null)">Price: High → Low</option>
+                        <option value="discount"   selected="@(Model.SortBy=="discount"   ?"selected":null)">Biggest Discounts</option>
+                    </select>
+                </form>
+            </div>
+
+            <!-- Product grid -->
+            @if (!Model.Products.Any())
+            {
+                <div class="empty-state">
+                    <i class="fa fa-magnifying-glass d-block"></i>
+                    <h4>No Products Found</h4>
+                    <p>Try adjusting your filters or search keywords.</p>
+                </div>
+            }
+            else
+            {
+                <div class="row g-4">
+                    @foreach (var product in Model.Products)
                     {
-                        var primaryImage = product.ProductImages.FirstOrDefault(i => i.IsPrimary) ?? product.ProductImages.FirstOrDefault();
+                        var primaryImage = product.ProductImages.FirstOrDefault(i => i.IsPrimary)
+                                        ?? product.ProductImages.FirstOrDefault();
                         <div class="col-md-6 col-lg-4">
-                            <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden card-hover d-flex flex-column">
-                                <div class="position-relative bg-light" style="padding-top: 100%;">
-                                    <img src="@(primaryImage != null ? primaryImage.ImagePath : "/images/placeholder-product.png")" 
-                                         class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover" 
+                            <div class="product-card">
+                                <div class="product-card__img-wrap">
+                                    <img class="product-card__img"
+                                         src="@(primaryImage != null ? primaryImage.ImagePath : "/images/placeholder-product.png")"
                                          alt="@product.Name"
                                          onerror="this.src='https://placehold.co/300x300?text=Product'" />
-                                    
                                     @if (product.Discount > 0)
                                     {
-                                        <span class="position-absolute top-0 start-0 m-3 badge bg-danger rounded-pill px-3 py-1.5 fw-bold bg-gradient">
-                                            -@product.Discount.ToString("F0")%
-                                        </span>
+                                        <span class="product-card__badge">-@product.Discount.ToString("F0")%</span>
                                     }
+                                    <a class="product-card__quick" asp-action="Details" asp-route-id="@product.Id">
+                                        Quick View &nbsp;<i class="fa fa-arrow-right"></i>
+                                    </a>
                                 </div>
-
-                                <div class="card-body p-4 d-flex flex-column flex-grow-1">
-                                    <span class="text-muted small text-uppercase fw-semibold">@product.Brand</span>
-                                    <h5 class="card-title fw-bold text-dark mt-1 mb-2 text-truncate-2" style="height: 48px; line-height: 24px;">
-                                        <a asp-action="Details" asp-route-id="@product.Id" class="text-dark text-decoration-none">
-                                            @product.Name
-                                        </a>
-                                    </h5>
-
-                                    <div class="mt-auto pt-3 border-top d-flex justify-content-between align-items-center">
+                                <div class="product-card__body">
+                                    <p class="product-card__brand">@product.Brand</p>
+                                    <a class="product-card__name" asp-action="Details" asp-route-id="@product.Id">
+                                        @product.Name
+                                    </a>
+                                    <div class="product-card__footer">
                                         <div>
+                                            <span class="product-card__price">
+                                                $@(product.Discount > 0 ? product.DiscountedPrice.ToString("F2") : product.Price.ToString("F2"))
+                                            </span>
                                             @if (product.Discount > 0)
                                             {
-                                                <span class="fw-bold text-primary fs-5">$@product.DiscountedPrice.ToString("F2")</span>
-                                                <span class="text-decoration-line-through text-muted small ms-1">$@product.Price.ToString("F2")</span>
-                                            }
-                                            else
-                                            {
-                                                <span class="fw-bold text-dark fs-5">$@product.Price.ToString("F2")</span>
+                                                <span class="product-card__original">$@product.Price.ToString("F2")</span>
                                             }
                                         </div>
-                                        <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-outline-primary rounded-circle p-2" style="width: 38px; height: 38px; display: inline-flex; justify-content: center; align-items: center;" title="View Details">
+                                        <a class="product-card__arrow" asp-action="Details" asp-route-id="@product.Id" title="View">
                                             <i class="fa fa-arrow-right"></i>
                                         </a>
                                     </div>
@@ -141,47 +152,52 @@
                             </div>
                         </div>
                     }
-                }
-            </div>
+                </div>
+            }
 
-            <!-- Pagination Controls -->
+            <!-- Pagination -->
             @if (Model.TotalPages > 1)
             {
                 <nav class="mt-5" aria-label="Catalog navigation">
-                    <ul class="pagination justify-content-center">
+                    <ul class="pagination justify-content-center gap-1">
                         <li class="page-item @(Model.Page <= 1 ? "disabled" : "")">
-                            <a class="page-link shadow-sm border-0 rounded-start-3" asp-action="Index" 
-                               asp-route-page="@(Model.Page - 1)" 
-                               asp-route-search="@Model.Search" 
-                               asp-route-categoryId="@Model.CategoryId" 
-                               asp-route-minPrice="@Model.MinPrice" 
-                               asp-route-maxPrice="@Model.MaxPrice" 
-                               asp-route-sortBy="@Model.SortBy">Previous</a>
+                            <a class="page-link" asp-action="Index"
+                               asp-route-page="@(Model.Page - 1)"
+                               asp-route-search="@Model.Search"
+                               asp-route-categoryId="@Model.CategoryId"
+                               asp-route-minPrice="@Model.MinPrice"
+                               asp-route-maxPrice="@Model.MaxPrice"
+                               asp-route-sortBy="@Model.SortBy">
+                                <i class="fa fa-chevron-left" style="font-size:.75rem;"></i>
+                            </a>
                         </li>
                         @for (int i = 1; i <= Model.TotalPages; i++)
                         {
                             <li class="page-item @(Model.Page == i ? "active" : "")">
-                                <a class="page-link shadow-sm border-0" asp-action="Index" 
-                                   asp-route-page="@i" 
-                                   asp-route-search="@Model.Search" 
-                                   asp-route-categoryId="@Model.CategoryId" 
-                                   asp-route-minPrice="@Model.MinPrice" 
-                                   asp-route-maxPrice="@Model.MaxPrice" 
+                                <a class="page-link" asp-action="Index"
+                                   asp-route-page="@i"
+                                   asp-route-search="@Model.Search"
+                                   asp-route-categoryId="@Model.CategoryId"
+                                   asp-route-minPrice="@Model.MinPrice"
+                                   asp-route-maxPrice="@Model.MaxPrice"
                                    asp-route-sortBy="@Model.SortBy">@i</a>
                             </li>
                         }
                         <li class="page-item @(Model.Page >= Model.TotalPages ? "disabled" : "")">
-                            <a class="page-link shadow-sm border-0 rounded-end-3" asp-action="Index" 
-                               asp-route-page="@(Model.Page + 1)" 
-                               asp-route-search="@Model.Search" 
-                               asp-route-categoryId="@Model.CategoryId" 
-                               asp-route-minPrice="@Model.MinPrice" 
-                               asp-route-maxPrice="@Model.MaxPrice" 
-                               asp-route-sortBy="@Model.SortBy">Next</a>
+                            <a class="page-link" asp-action="Index"
+                               asp-route-page="@(Model.Page + 1)"
+                               asp-route-search="@Model.Search"
+                               asp-route-categoryId="@Model.CategoryId"
+                               asp-route-minPrice="@Model.MinPrice"
+                               asp-route-maxPrice="@Model.MaxPrice"
+                               asp-route-sortBy="@Model.SortBy">
+                                <i class="fa fa-chevron-right" style="font-size:.75rem;"></i>
+                            </a>
                         </li>
                     </ul>
                 </nav>
             }
-        </div>
-    </div>
-</div>
+
+        </div><!-- /col-lg-9 -->
+    </div><!-- /row -->
+</div><!-- /container -->

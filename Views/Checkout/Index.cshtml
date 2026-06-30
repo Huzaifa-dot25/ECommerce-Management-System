@@ -5,117 +5,148 @@
 }
 
 <div class="container py-5">
-    <h2 class="fw-bold text-dark mb-4"><i class="fa-solid fa-cash-register text-primary me-2"></i>Checkout</h2>
+
+    <div class="mb-5">
+        <span class="section-label">Almost There</span>
+        <h1 class="section-title">Checkout</h1>
+    </div>
+
+    <!-- Steps indicator -->
+    <div class="d-flex align-items-center checkout-steps mb-5 gap-2 flex-wrap">
+        <div class="checkout-step active">
+            <span class="checkout-step__num">1</span>
+            <span>Shipping</span>
+        </div>
+        <div class="step-sep"></div>
+        <div class="checkout-step active">
+            <span class="checkout-step__num">2</span>
+            <span>Payment</span>
+        </div>
+        <div class="step-sep"></div>
+        <div class="checkout-step">
+            <span class="checkout-step__num">3</span>
+            <span>Confirmation</span>
+        </div>
+    </div>
 
     <form asp-action="Index" method="post" id="checkoutForm">
-        <div class="row">
-            <!-- Shipping Details -->
-            <div class="col-lg-7 mb-4">
-                <div class="card border-0 shadow-sm rounded-4 p-4">
-                    <h5 class="fw-bold text-dark mb-4"><i class="fa fa-truck text-muted me-2"></i>Shipping Address</h5>
-                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <div class="row g-4">
+
+            <!-- ── LEFT: Shipping + Payment ──────────────────── -->
+            <div class="col-lg-7">
+
+                <!-- Shipping card -->
+                <div class="card border-0 p-4 mb-4" style="box-shadow:var(--shadow-sm);">
+                    <h6 style="font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--clr-muted);margin-bottom:1.5rem;">
+                        <i class="fa fa-location-dot me-2"></i>Shipping Address
+                    </h6>
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger border-0 rounded mb-3 py-2" style="font-size:.85rem;"></div>
 
                     <div class="mb-3">
-                        <label asp-for="StreetAddress" class="form-label fw-semibold"></label>
+                        <label asp-for="StreetAddress" class="form-label"></label>
                         <input asp-for="StreetAddress" class="form-control" placeholder="123 Main St, Apt 4B" />
-                        <span asp-validation-for="StreetAddress" class="text-danger small"></span>
+                        <span asp-validation-for="StreetAddress" class="text-danger" style="font-size:.78rem;"></span>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="City" class="form-label fw-semibold"></label>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="City" class="form-label"></label>
                             <input asp-for="City" class="form-control" placeholder="New York" />
-                            <span asp-validation-for="City" class="text-danger small"></span>
+                            <span asp-validation-for="City" class="text-danger" style="font-size:.78rem;"></span>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="State" class="form-label fw-semibold"></label>
+                        <div class="col-md-6">
+                            <label asp-for="State" class="form-label"></label>
                             <input asp-for="State" class="form-control" placeholder="NY" />
-                            <span asp-validation-for="State" class="text-danger small"></span>
+                            <span asp-validation-for="State" class="text-danger" style="font-size:.78rem;"></span>
                         </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="PostalCode" class="form-label fw-semibold"></label>
+                        <div class="col-md-6">
+                            <label asp-for="PostalCode" class="form-label"></label>
                             <input asp-for="PostalCode" class="form-control" placeholder="10001" />
-                            <span asp-validation-for="PostalCode" class="text-danger small"></span>
+                            <span asp-validation-for="PostalCode" class="text-danger" style="font-size:.78rem;"></span>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="Phone" class="form-label fw-semibold"></label>
+                        <div class="col-md-6">
+                            <label asp-for="Phone" class="form-label"></label>
                             <input asp-for="Phone" class="form-control" placeholder="(555) 555-5555" />
-                            <span asp-validation-for="Phone" class="text-danger small"></span>
-                        </div>
-                    </div>
-
-                    <h5 class="fw-bold text-dark mt-4 mb-3"><i class="fa fa-credit-card text-muted me-2"></i>Payment Method</h5>
-                    <div class="border rounded-3 p-3 bg-light mb-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" asp-for="PaymentMethod" value="Cash On Delivery" checked />
-                            <label class="form-check-label fw-bold text-dark" asp-for="PaymentMethod">
-                                Cash On Delivery (COD)
-                            </label>
-                            <p class="text-muted small mb-0 mt-1">Pay with cash upon delivery of your items.</p>
+                            <span asp-validation-for="Phone" class="text-danger" style="font-size:.78rem;"></span>
                         </div>
                     </div>
                 </div>
+
+                <!-- Payment card -->
+                <div class="card border-0 p-4" style="box-shadow:var(--shadow-sm);">
+                    <h6 style="font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--clr-muted);margin-bottom:1.5rem;">
+                        <i class="fa fa-credit-card me-2"></i>Payment Method
+                    </h6>
+                    <label class="d-flex align-items-start gap-3 p-4 rounded cursor-pointer" style="border:1.5px solid var(--clr-black);background:#faf9f7;cursor:pointer;">
+                        <input class="form-check-input mt-1 flex-shrink-0" type="radio" asp-for="PaymentMethod" value="Cash On Delivery" checked />
+                        <div>
+                            <p class="mb-0 fw-600" style="font-weight:600;font-size:.9rem;">Cash on Delivery</p>
+                            <p class="mb-0 text-muted" style="font-size:.8rem;">Pay with cash when your order arrives.</p>
+                        </div>
+                    </label>
+                </div>
+
             </div>
 
-            <!-- Order Summary & Coupons -->
+            <!-- ── RIGHT: Order Summary ───────────────────────── -->
             <div class="col-lg-5">
-                <div class="card border-0 shadow-sm rounded-4 p-4 sticky-top" style="top: 90px;">
-                    <h5 class="fw-bold text-dark mb-4">Your Order</h5>
-                    
-                    <div class="mb-4" style="max-height: 200px; overflow-y: auto;">
+                <div class="card border-0 p-4" style="box-shadow:var(--shadow-sm);position:sticky;top:86px;">
+                    <h6 style="font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--clr-muted);margin-bottom:1.5rem;">Your Order</h6>
+
+                    <div style="max-height:200px;overflow-y:auto;margin-bottom:1rem;">
                         @foreach (var item in Model.Cart!.CartItems)
                         {
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <div style="max-width: 75%;">
-                                    <span class="fw-bold text-dark">@item.Quantity x</span>
-                                    <span class="text-muted ms-1">@item.Product?.Name</span>
+                            <div class="d-flex justify-content-between align-items-center mb-3" style="font-size:.88rem;">
+                                <div style="max-width:74%;">
+                                    <span style="font-weight:700;color:var(--clr-black);">@item.Quantity &times;</span>
+                                    <span style="color:var(--clr-mid);margin-left:4px;">@item.Product?.Name</span>
                                 </div>
-                                <span class="fw-semibold text-dark">$@((item.Product!.DiscountedPrice * item.Quantity).ToString("F2"))</span>
+                                <span style="font-weight:600;">$@((item.Product!.DiscountedPrice * item.Quantity).ToString("F2"))</span>
                             </div>
                         }
                     </div>
 
-                    <hr class="my-4">
+                    <hr style="border-color:var(--clr-border);" />
 
-                    <!-- Coupon Code Input -->
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold text-muted small text-uppercase">Discount Coupon</label>
+                    <!-- Coupon -->
+                    <div class="mb-3">
+                        <label class="form-label">Discount Coupon</label>
                         <div class="input-group">
-                            <input type="text" id="couponCodeInput" asp-for="CouponCode" class="form-control bg-light" placeholder="Enter coupon code" />
-                            <button type="button" id="applyCouponBtn" class="btn btn-secondary px-3">Apply</button>
+                            <input type="text" id="couponCodeInput" asp-for="CouponCode" class="form-control" placeholder="Enter code…" style="font-size:.88rem;" />
+                            <button type="button" id="applyCouponBtn" class="btn btn-light" style="font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;">Apply</button>
                         </div>
-                        <div id="couponMessage" class="small mt-1"></div>
+                        <p id="couponMessage" style="font-size:.78rem;margin-top:4px;"></p>
                     </div>
 
-                    <!-- Summary math -->
-                    <div class="d-flex justify-content-between mb-3 text-muted">
-                        <span>Subtotal:</span>
+                    <hr style="border-color:var(--clr-border);" />
+
+                    <div class="d-flex justify-content-between mb-2" style="font-size:.88rem;">
+                        <span style="color:var(--clr-muted);">Subtotal</span>
                         <span>$@subTotal.ToString("F2")</span>
                     </div>
-                    <div class="d-flex justify-content-between mb-3 text-danger d-none" id="discountRow">
-                        <span>Discount (<span id="discountPercent">0</span>%):</span>
-                        <span>-$<span id="discountAmount">0.00</span></span>
+                    <div class="d-flex justify-content-between mb-2 d-none" id="discountRow" style="font-size:.88rem;">
+                        <span style="color:var(--clr-danger);">Discount (<span id="discountPercent">0</span>%)</span>
+                        <span style="color:var(--clr-danger);">-$<span id="discountAmount">0.00</span></span>
                     </div>
-                    <div class="d-flex justify-content-between mb-3 text-muted">
-                        <span>Shipping:</span>
-                        <span class="text-success fw-bold">FREE</span>
-                    </div>
-                    
-                    <hr class="my-3">
-                    
-                    <div class="d-flex justify-content-between mb-4">
-                        <span class="fw-bold text-dark fs-5">Total to Pay:</span>
-                        <span class="fs-4 fw-bold text-primary">$<span id="totalAmount">@subTotal.ToString("F2")</span></span>
+                    <div class="d-flex justify-content-between mb-3" style="font-size:.88rem;">
+                        <span style="color:var(--clr-muted);">Shipping</span>
+                        <span style="color:#2d8a4e;font-weight:600;">Free</span>
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100 py-3 rounded-3 fw-bold bg-gradient shadow-sm">
-                        Place Order
+                    <hr style="border-color:var(--clr-border);margin-bottom:1.25rem;" />
+
+                    <div class="d-flex justify-content-between mb-4">
+                        <span style="font-weight:700;">Total</span>
+                        <span style="font-weight:700;font-size:1.3rem;color:var(--clr-black);">$<span id="totalAmount">@subTotal.ToString("F2")</span></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2">
+                        <i class="fa fa-check me-2"></i>Place Order
                     </button>
                 </div>
             </div>
+
         </div>
     </form>
 </div>
@@ -127,31 +158,29 @@
             $("#applyCouponBtn").click(function () {
                 var code = $("#couponCodeInput").val().trim();
                 var subtotal = @subTotal;
-                
-                if (code === "") {
-                    $("#couponMessage").text("Please enter a coupon code.").removeClass("text-success").addClass("text-danger");
+                if (!code) {
+                    $("#couponMessage").text("Please enter a coupon code.").css("color","var(--clr-danger)");
                     return;
                 }
-
                 $.ajax({
                     url: '@Url.Action("ValidateCoupon", "Checkout")',
                     type: 'GET',
                     data: { code: code, subtotal: subtotal },
                     success: function (res) {
                         if (res.success) {
-                            $("#couponMessage").text("Coupon applied successfully!").removeClass("text-danger").addClass("text-success");
+                            $("#couponMessage").text("Coupon applied!").css("color","#2d8a4e");
                             $("#discountPercent").text(res.discountPercent);
                             $("#discountAmount").text(res.discountAmount);
                             $("#discountRow").removeClass("d-none");
                             $("#totalAmount").text(res.total);
                         } else {
-                            $("#couponMessage").text(res.message).removeClass("text-success").addClass("text-danger");
+                            $("#couponMessage").text(res.message).css("color","var(--clr-danger)");
                             $("#discountRow").addClass("d-none");
                             $("#totalAmount").text(subtotal.toFixed(2));
                         }
                     },
                     error: function () {
-                        $("#couponMessage").text("An error occurred. Try again.").removeClass("text-success").addClass("text-danger");
+                        $("#couponMessage").text("An error occurred. Try again.").css("color","var(--clr-danger)");
                     }
                 });
             });

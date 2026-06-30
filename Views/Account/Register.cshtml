@@ -1,63 +1,65 @@
 @model E_com.ViewModels.RegisterViewModel
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Create Account";
 }
 
-<div class="row justify-content-center align-items-center min-vh-75">
-    <div class="col-md-5">
-        <div class="card shadow-lg border-0 rounded-4 overflow-hidden my-5">
-            <div class="card-header bg-gradient bg-primary text-white text-center py-4 border-0">
-                <h3 class="mb-0 fw-bold">Create Account</h3>
-                <p class="mb-0 opacity-75">Get started with E-Shop today</p>
-            </div>
-            <div class="card-body p-5">
-                <form asp-action="Register" method="post">
-                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-                    
-                    <div class="mb-3">
-                        <label asp-for="FullName" class="form-label fw-semibold"></label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0"><i class="fa fa-user text-muted"></i></span>
-                            <input asp-for="FullName" class="form-control border-start-0 bg-light" placeholder="John Doe" />
-                        </div>
-                        <span asp-validation-for="FullName" class="text-danger small"></span>
-                    </div>
+<div class="row justify-content-center align-items-center min-vh-75 py-5">
+    <div class="col-md-5 col-lg-5">
 
-                    <div class="mb-3">
-                        <label asp-for="Email" class="form-label fw-semibold"></label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0"><i class="fa fa-envelope text-muted"></i></span>
-                            <input asp-for="Email" class="form-control border-start-0 bg-light" placeholder="name@example.com" />
-                        </div>
-                        <span asp-validation-for="Email" class="text-danger small"></span>
-                    </div>
-
-                    <div class="mb-3">
-                        <label asp-for="Password" class="form-label fw-semibold"></label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0"><i class="fa fa-lock text-muted"></i></span>
-                            <input asp-for="Password" type="password" class="form-control border-start-0 bg-light" placeholder="••••••••" />
-                        </div>
-                        <span asp-validation-for="Password" class="text-danger small"></span>
-                    </div>
-
-                    <div class="mb-4">
-                        <label asp-for="ConfirmPassword" class="form-label fw-semibold"></label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0"><i class="fa fa-lock text-muted"></i></span>
-                            <input asp-for="ConfirmPassword" type="password" class="form-control border-start-0 bg-light" placeholder="••••••••" />
-                        </div>
-                        <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary w-100 py-2.5 rounded-3 fw-bold bg-gradient shadow-sm">Register</button>
-                </form>
-            </div>
-            <div class="card-footer bg-light text-center py-3 border-0">
-                <span class="text-muted">Already have an account?</span>
-                <a asp-action="Login" class="text-primary fw-bold text-decoration-none ms-1">Login here</a>
-            </div>
+        <div class="text-center mb-4">
+            <span class="section-label">Join E-Shop</span>
+            <h2 class="section-title">Create Account</h2>
         </div>
+
+        <div class="card border-0 p-4 p-md-5" style="box-shadow:var(--shadow-md);">
+            <form asp-action="Register" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger border-0 rounded mb-3 py-2" style="font-size:.85rem;"></div>
+
+                <div class="mb-3">
+                    <label asp-for="FullName" class="form-label">Full Name</label>
+                    <div class="input-group">
+                        <span class="input-group-text border-end-0"><i class="fa fa-user" style="font-size:.8rem;"></i></span>
+                        <input asp-for="FullName" class="form-control border-start-0" placeholder="John Doe" autocomplete="name" />
+                    </div>
+                    <span asp-validation-for="FullName" class="text-danger" style="font-size:.78rem;"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label">Email Address</label>
+                    <div class="input-group">
+                        <span class="input-group-text border-end-0"><i class="fa fa-envelope" style="font-size:.8rem;"></i></span>
+                        <input asp-for="Email" class="form-control border-start-0" placeholder="you@example.com" autocomplete="email" />
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger" style="font-size:.78rem;"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text border-end-0"><i class="fa fa-lock" style="font-size:.8rem;"></i></span>
+                        <input asp-for="Password" type="password" class="form-control border-start-0" placeholder="••••••••" autocomplete="new-password" />
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger" style="font-size:.78rem;"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="ConfirmPassword" class="form-label">Confirm Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text border-end-0"><i class="fa fa-lock" style="font-size:.8rem;"></i></span>
+                        <input asp-for="ConfirmPassword" type="password" class="form-control border-start-0" placeholder="••••••••" autocomplete="new-password" />
+                    </div>
+                    <span asp-validation-for="ConfirmPassword" class="text-danger" style="font-size:.78rem;"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2">Create Account</button>
+            </form>
+        </div>
+
+        <p class="text-center mt-3 mb-0" style="font-size:.84rem;color:var(--clr-muted);">
+            Already have an account?
+            <a asp-action="Login" style="font-weight:600;color:var(--clr-black);text-decoration:none;">Sign in &rarr;</a>
+        </p>
+
     </div>
 </div>
 

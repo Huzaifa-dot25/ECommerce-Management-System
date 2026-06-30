@@ -3,131 +3,187 @@
     ViewData["Title"] = "Premium E-Shop";
 }
 
-<!-- Hero Section -->
-<section class="hero-section text-center mb-5 d-flex align-items-center justify-content-center" style="min-height: 70vh;">
+<!-- ─── HERO ─────────────────────────────────────────────── -->
+<section class="hero-section">
     <div class="hero-overlay"></div>
-    <div class="position-relative z-index-1 p-5">
-        <h1 class="display-3 mb-4 animate__animated animate__fadeInDown" style="color: var(--primary-color);">Elevate Your Style</h1>
-        <p class="lead mb-5 animate__animated animate__fadeInUp" style="color: #555; max-width: 600px; margin: 0 auto;">
-            Discover our curated collection of premium products, designed for the modern connoisseur.
+    <div class="hero-content fade-in-up">
+        <span class="hero-eyebrow">New Season — 2026 Collection</span>
+        <h1 class="hero-title">Elevate<br>Your Style</h1>
+        <p class="hero-subtitle">
+            Discover our curated selection of premium products,
+            crafted for those who appreciate quality.
         </p>
-        <div class="animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
-            <a asp-controller="Shop" asp-action="Index" class="btn btn-primary btn-lg px-5 py-3 shadow-none">
-                Explore Collection
+        <div class="hero-cta">
+            <a asp-controller="Shop" asp-action="Index" class="btn btn-primary btn-lg px-5 delay-1">
+                Shop Now
+            </a>
+            <a asp-controller="Shop" asp-action="Index" class="btn btn-outline-primary btn-lg px-5 delay-2">
+                View Lookbook
             </a>
         </div>
     </div>
 </section>
 
-<!-- Categories Section -->
-<section class="mb-5 pt-4">
-    <div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-2">
-        <h3 class="mb-0">Curated Collections</h3>
-        <a asp-controller="Shop" asp-action="Index" class="text-dark text-decoration-none text-uppercase tracking-wider" style="font-size: 0.8rem; font-weight: 500;">
-            View All <i class="fa fa-arrow-right ms-1"></i>
-        </a>
+<!-- ─── TRUST STRIP ───────────────────────────────────────── -->
+<div class="container py-5">
+    <div class="row g-3 text-center mb-5">
+        <div class="col-6 col-md-3">
+            <div class="d-flex flex-column align-items-center gap-2 py-3">
+                <i class="fa-solid fa-truck-fast fa-lg" style="color:var(--clr-gold);"></i>
+                <span style="font-size:.75rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--clr-mid);">Free Shipping</span>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="d-flex flex-column align-items-center gap-2 py-3">
+                <i class="fa-solid fa-rotate-left fa-lg" style="color:var(--clr-gold);"></i>
+                <span style="font-size:.75rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--clr-mid);">Easy Returns</span>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="d-flex flex-column align-items-center gap-2 py-3">
+                <i class="fa-solid fa-shield-halved fa-lg" style="color:var(--clr-gold);"></i>
+                <span style="font-size:.75rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--clr-mid);">Secure Payment</span>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="d-flex flex-column align-items-center gap-2 py-3">
+                <i class="fa-solid fa-headset fa-lg" style="color:var(--clr-gold);"></i>
+                <span style="font-size:.75rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--clr-mid);">24/7 Support</span>
+            </div>
+        </div>
     </div>
-    
-    <div class="row g-4 mt-2">
+
+    <!-- ─── CATEGORIES ──────────────────────────────────────── -->
+    <section class="mb-6 pb-2">
+        <div class="section-header">
+            <div>
+                <span class="section-label">Browse By</span>
+                <h2 class="section-title">Curated Collections</h2>
+            </div>
+            <a asp-controller="Shop" asp-action="Index" class="view-all">
+                View All <i class="fa fa-arrow-right"></i>
+            </a>
+        </div>
+
         @if (!Model.Categories.Any())
         {
-            <div class="col-12 text-center text-muted py-5">
-                <p>No collections available at the moment.</p>
+            <div class="empty-state">
+                <i class="fa fa-folder-open"></i>
+                <p>No collections available yet.</p>
             </div>
         }
         else
         {
-            foreach (var category in Model.Categories)
-            {
-                <div class="col-6 col-md-3">
-                    <a asp-controller="Shop" asp-action="Index" asp-route-categoryId="@category.Id" class="text-decoration-none group">
-                        <div class="card text-center card-hover p-4 h-100 d-flex flex-column align-items-center justify-content-center">
-                            <div class="mb-4 overflow-hidden rounded-circle" style="width: 100px; height: 100px; border: 1px solid var(--border-color); padding: 5px;">
-                                <img src="@(string.IsNullOrEmpty(category.ImagePath) ? "https://placehold.co/200x200?text=+" : category.ImagePath)" 
-                                     class="w-100 h-100 object-fit-cover rounded-circle transition-transform" 
+            <div class="row g-3">
+                @foreach (var category in Model.Categories)
+                {
+                    <div class="col-6 col-md-3">
+                        <a class="cat-card" asp-controller="Shop" asp-action="Index" asp-route-categoryId="@category.Id">
+                            <div class="cat-card__img-wrap">
+                                <img class="cat-card__img"
+                                     src="@(string.IsNullOrEmpty(category.ImagePath) ? "https://placehold.co/200x200?text=+" : category.ImagePath)"
                                      alt="@category.Name"
-                                     style="transition: transform 0.5s ease;"
-                                     onmouseover="this.style.transform='scale(1.1)'"
-                                     onmouseout="this.style.transform='scale(1)'"
                                      onerror="this.src='https://placehold.co/200x200?text=+'" />
                             </div>
-                            <h6 class="mb-1 text-dark text-uppercase tracking-wider" style="font-size: 0.9rem;">@category.Name</h6>
-                            <span class="text-muted" style="font-size: 0.75rem;">@category.Products.Count() Pieces</span>
-                        </div>
-                    </a>
-                </div>
-            }
+                            <p class="cat-card__name">@category.Name</p>
+                            <span class="cat-card__count">@category.Products.Count() pieces</span>
+                        </a>
+                    </div>
+                }
+            </div>
         }
-    </div>
-</section>
+    </section>
 
-<!-- Featured Products Section -->
-<section class="mb-5 pt-4">
-    <div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-2">
-        <h3 class="mb-0">New Arrivals</h3>
-        <a asp-controller="Shop" asp-action="Index" class="text-dark text-decoration-none text-uppercase tracking-wider" style="font-size: 0.8rem; font-weight: 500;">
-            Discover <i class="fa fa-arrow-right ms-1"></i>
-        </a>
-    </div>
+    <!-- ─── FEATURED PRODUCTS ───────────────────────────────── -->
+    <section class="mb-5">
+        <div class="section-header">
+            <div>
+                <span class="section-label">Just In</span>
+                <h2 class="section-title">New Arrivals</h2>
+            </div>
+            <a asp-controller="Shop" asp-action="Index" class="view-all">
+                Discover All <i class="fa fa-arrow-right"></i>
+            </a>
+        </div>
 
-    <div class="row g-4 mt-2">
         @if (!Model.FeaturedProducts.Any())
         {
-            <div class="col-12 text-center text-muted py-5">
-                <p class="mb-0">Check back later for new arrivals.</p>
+            <div class="empty-state">
+                <i class="fa fa-box-open"></i>
+                <p>Check back later for new arrivals.</p>
             </div>
         }
         else
         {
-            foreach (var product in Model.FeaturedProducts)
-            {
-                var primaryImage = product.ProductImages.FirstOrDefault(i => i.IsPrimary) ?? product.ProductImages.FirstOrDefault();
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                    <div class="card h-100 card-hover d-flex flex-column border-0" style="background: transparent;">
-                        <!-- Product Image & Badges -->
-                        <div class="position-relative overflow-hidden bg-white border" style="padding-top: 120%;">
-                            <a asp-controller="Shop" asp-action="Details" asp-route-id="@product.Id">
-                                <img src="@(primaryImage != null ? primaryImage.ImagePath : "/images/placeholder-product.png")" 
-                                     class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover transition-transform" 
+            <div class="row g-4">
+                @foreach (var product in Model.FeaturedProducts)
+                {
+                    var primaryImage = product.ProductImages.FirstOrDefault(i => i.IsPrimary)
+                                    ?? product.ProductImages.FirstOrDefault();
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <div class="product-card">
+                            <div class="product-card__img-wrap">
+                                <img class="product-card__img"
+                                     src="@(primaryImage != null ? primaryImage.ImagePath : "/images/placeholder-product.png")"
                                      alt="@product.Name"
-                                     style="transition: transform 0.6s ease;"
-                                     onmouseover="this.style.transform='scale(1.05)'"
-                                     onmouseout="this.style.transform='scale(1)'"
-                                     onerror="this.src='https://placehold.co/400x500?text=Product'" />
-                            </a>
-                            
-                            @if (product.Discount > 0)
-                            {
-                                <span class="position-absolute top-0 end-0 m-3 badge bg-dark px-2 py-1" style="font-size: 0.7rem;">
-                                    -@product.Discount.ToString("F0")%
-                                </span>
-                            }
-                        </div>
+                                     onerror="this.src='https://placehold.co/400x400?text=Product'" />
 
-                        <!-- Product details -->
-                        <div class="card-body p-3 px-0 d-flex flex-column">
-                            <span class="text-muted text-uppercase tracking-wider mb-1" style="font-size: 0.7rem;">@product.Brand</span>
-                            <h5 class="card-title mb-2 text-truncate-2" style="font-size: 1rem; line-height: 1.4;">
-                                <a asp-controller="Shop" asp-action="Details" asp-route-id="@product.Id" class="text-dark text-decoration-none">
-                                    @product.Name
-                                </a>
-                            </h5>
-                            
-                            <div class="mt-auto pt-2">
                                 @if (product.Discount > 0)
                                 {
-                                    <span class="fw-bold" style="color: var(--primary-color);">$@product.DiscountedPrice.ToString("F2")</span>
-                                    <span class="text-decoration-line-through text-muted ms-2" style="font-size: 0.85rem;">$@product.Price.ToString("F2")</span>
+                                    <span class="product-card__badge">-@product.Discount.ToString("F0")%</span>
                                 }
-                                else
-                                {
-                                    <span class="fw-bold" style="color: var(--primary-color);">$@product.Price.ToString("F2")</span>
-                                }
+
+                                <a class="product-card__quick" asp-controller="Shop" asp-action="Details" asp-route-id="@product.Id">
+                                    Quick View &nbsp;<i class="fa fa-arrow-right"></i>
+                                </a>
+                            </div>
+                            <div class="product-card__body">
+                                <p class="product-card__brand">@product.Brand</p>
+                                <a class="product-card__name" asp-controller="Shop" asp-action="Details" asp-route-id="@product.Id">
+                                    @product.Name
+                                </a>
+                                <div class="product-card__footer">
+                                    <div>
+                                        <span class="product-card__price">$@product.DiscountedPrice.ToString("F2")</span>
+                                        @if (product.Discount > 0)
+                                        {
+                                            <span class="product-card__original">$@product.Price.ToString("F2")</span>
+                                        }
+                                    </div>
+                                    <a class="product-card__arrow" asp-controller="Shop" asp-action="Details" asp-route-id="@product.Id" title="View Details">
+                                        <i class="fa fa-arrow-right"></i>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            }
+                }
+            </div>
         }
-    </div>
-</section>
+    </section>
+
+    <!-- ─── BANNER CTA ──────────────────────────────────────── -->
+    <section class="mb-5">
+        <div class="rounded" style="background:var(--clr-black); padding: 4rem 3rem; position:relative; overflow:hidden;">
+            <div style="position:absolute;top:-40px;right:-40px;width:300px;height:300px;border-radius:50%;background:rgba(184,150,62,.08);"></div>
+            <div style="position:absolute;bottom:-60px;left:-20px;width:200px;height:200px;border-radius:50%;background:rgba(184,150,62,.05);"></div>
+            <div class="row align-items-center position-relative">
+                <div class="col-lg-8">
+                    <span style="font-size:.72rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--clr-gold);">Limited Time Offer</span>
+                    <h2 style="font-family:var(--ff-display);color:#fff;font-size:clamp(1.6rem,3vw,2.4rem);margin-top:.5rem;margin-bottom:.75rem;">
+                        Up to 40% Off &mdash; Selected Items
+                    </h2>
+                    <p style="color:rgba(255,255,255,.5);font-size:.9rem;margin-bottom:0;">
+                        Don't miss our end-of-season sale. Premium quality at exceptional value.
+                    </p>
+                </div>
+                <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+                    <a asp-controller="Shop" asp-action="Index" asp-route-sortBy="discount" class="btn btn-gold btn-lg px-5">
+                        Shop Sale
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div><!-- /container -->
