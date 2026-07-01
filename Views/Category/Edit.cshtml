@@ -1,69 +1,119 @@
 @model E_com.Models.Category
 @{
     ViewData["Title"] = "Edit Category";
+    Layout = "_AdminLayout";
 }
 
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card border-0 shadow-sm rounded-4">
-                <div class="card-header bg-white py-3 border-0">
-                    <div class="d-flex align-items-center">
-                        <a asp-action="Index" class="btn btn-sm btn-light rounded-circle me-3"><i class="fa fa-arrow-left"></i></a>
-                        <h4 class="mb-0 fw-bold text-dark">Edit Category</h4>
+<div class="admin-page-header">
+    <div style="display:flex;align-items:center;gap:12px;">
+        <a asp-action="Index" class="btn btn-light btn-sm" style="border-radius:50%;width:34px;height:34px;padding:0;display:inline-flex;align-items:center;justify-content:center;">
+            <i class="fa fa-arrow-left" style="font-size:.8rem;"></i>
+        </a>
+        <div>
+            <h1>Edit Category</h1>
+            <p>Update the details for <strong>@Model.Name</strong>.</p>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="ImagePath" />
+            <input type="hidden" asp-for="CreatedDate" />
+            <div asp-validation-summary="ModelOnly" class="alert" style="background:#fdecea;border:1px solid #f5c6cb;color:#c0392b;border-radius:var(--radius-sm);font-size:.85rem;"></div>
+
+            <div style="background:#fff;border:1px solid var(--clr-border);border-radius:var(--radius-md);padding:24px;margin-bottom:20px;">
+                <p style="font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--clr-muted);margin-bottom:18px;">Category Details</p>
+
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label">Category Name</label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger" style="font-size:.78rem;"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label">Description</label>
+                    <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                    <span asp-validation-for="Description" class="text-danger" style="font-size:.78rem;"></span>
+                </div>
+
+                <div class="row g-3 align-items-center">
+                    <div class="col-md-7">
+                        <label class="form-label">Replace Image (optional)</label>
+                        <input type="file" name="imageFile" class="form-control" accept="image/*" id="catImageInput" />
+                        <p style="font-size:.76rem;color:var(--clr-muted);margin-top:5px;">Leave empty to keep the current image.</p>
+                    </div>
+                    <div class="col-md-5 d-flex align-items-center gap-3">
+                        @if (!string.IsNullOrEmpty(Model.ImagePath))
+                        {
+                            <img id="imagePreview" src="@Model.ImagePath" alt="Current image"
+                                 style="width:70px;height:70px;border-radius:50%;object-fit:cover;border:2px solid var(--clr-border);"
+                                 onerror="this.src='https://placehold.co/70x70?text=C'" />
+                            <span style="font-size:.74rem;color:var(--clr-muted);">Current image</span>
+                        }
+                        else
+                        {
+                            <img id="imagePreview" src="https://placehold.co/70x70?text=C" alt="Preview"
+                                 style="width:70px;height:70px;border-radius:50%;object-fit:cover;border:2px solid var(--clr-border);" />
+                        }
                     </div>
                 </div>
-                <div class="card-body p-4">
-                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
-                        <input type="hidden" asp-for="Id" />
-                        <input type="hidden" asp-for="ImagePath" />
-                        <input type="hidden" asp-for="CreatedDate" />
+            </div>
 
-                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <div style="background:#fff;border:1px solid var(--clr-border);border-radius:var(--radius-md);padding:24px;margin-bottom:24px;">
+                <p style="font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--clr-muted);margin-bottom:14px;">Visibility</p>
+                <label style="display:flex;align-items:center;gap:12px;cursor:pointer;">
+                    <input asp-for="Status" type="checkbox" class="form-check-input m-0" role="switch" style="width:36px;height:20px;cursor:pointer;" />
+                    <div>
+                        <p style="margin:0;font-weight:600;font-size:.85rem;">Active</p>
+                        <p style="margin:0;font-size:.74rem;color:var(--clr-muted);">Visible to customers on the storefront</p>
+                    </div>
+                </label>
+            </div>
 
-                        <div class="mb-3">
-                            <label asp-for="Name" class="form-label fw-semibold">Category Name</label>
-                            <input asp-for="Name" class="form-control" />
-                            <span asp-validation-for="Name" class="text-danger small"></span>
-                        </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary px-5">
+                    <i class="fa fa-check me-2"></i>Save Changes
+                </button>
+                <a asp-action="Index" class="btn btn-light px-4">Cancel</a>
+            </div>
+        </form>
+    </div>
 
-                        <div class="mb-3">
-                            <label asp-for="Description" class="form-label fw-semibold">Description</label>
-                            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
-                            <span asp-validation-for="Description" class="text-danger small"></span>
-                        </div>
-
-                        <div class="row mb-4 align-items-center">
-                            <div class="col-md-6 mb-3 mb-md-0">
-                                <label class="form-label fw-semibold d-block">Category Image</label>
-                                @if (!string.IsNullOrEmpty(Model.ImagePath))
-                                {
-                                    <div class="mb-2">
-                                        <img src="@Model.ImagePath" class="rounded-3 border" style="width: 80px; height: 80px; object-fit: cover;" alt="Current Image" />
-                                    </div>
-                                }
-                                <input type="file" name="imageFile" class="form-control" accept="image/*" />
-                            </div>
-                            <div class="col-md-6">
-                                <label asp-for="Status" class="form-label fw-semibold d-block">Status</label>
-                                <div class="form-check form-switch mt-2">
-                                    <input asp-for="Status" class="form-check-input" type="checkbox" role="switch">
-                                    <label class="form-check-label text-muted" asp-for="Status">Active (Visible in storefront)</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary px-4 py-2.5 rounded-3 fw-bold bg-gradient shadow-sm">Save Changes</button>
-                            <a asp-action="Index" class="btn btn-light px-4 py-2.5 rounded-3 fw-semibold">Cancel</a>
-                        </div>
-                    </form>
+    <!-- Info sidebar -->
+    <div class="col-lg-4">
+        <div style="background:#fff;border:1px solid var(--clr-border);border-radius:var(--radius-md);padding:22px;position:sticky;top:72px;">
+            <p style="font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--clr-muted);margin-bottom:14px;">Category Info</p>
+            <div style="font-size:.83rem;color:var(--clr-mid);">
+                <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f4f2ef;">
+                    <span>Created</span>
+                    <strong style="color:var(--clr-black);">@Model.CreatedDate.ToString("MMM dd, yyyy")</strong>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:8px 0;">
+                    <span>Products</span>
+                    <strong style="color:var(--clr-black);">@Model.Products.Count</strong>
                 </div>
             </div>
+            <a asp-controller="Shop" asp-action="Index" asp-route-categoryId="@Model.Id" target="_blank"
+               class="btn btn-light w-100 mt-3" style="font-size:.8rem;">
+                <i class="fa fa-arrow-up-right-from-square me-2"></i>View in Store
+            </a>
         </div>
     </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('catImageInput').addEventListener('change', function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => { document.getElementById('imagePreview').src = e.target.result; };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
 }

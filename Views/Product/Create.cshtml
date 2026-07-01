@@ -1,96 +1,138 @@
 @model E_com.Models.Product
 @{
     ViewData["Title"] = "Add Product";
+    Layout = "_AdminLayout";
 }
 
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            <div class="card border-0 shadow-sm rounded-4">
-                <div class="card-header bg-white py-3 border-0">
-                    <div class="d-flex align-items-center">
-                        <a asp-action="Index" class="btn btn-sm btn-light rounded-circle me-3"><i class="fa fa-arrow-left"></i></a>
-                        <h4 class="mb-0 fw-bold text-dark">Add New Product</h4>
+<div class="admin-page-header">
+    <div style="display:flex;align-items:center;gap:12px;">
+        <a asp-action="Index" class="btn btn-light btn-sm" style="border-radius:50%;width:34px;height:34px;padding:0;display:inline-flex;align-items:center;justify-content:center;">
+            <i class="fa fa-arrow-left" style="font-size:.8rem;"></i>
+        </a>
+        <div>
+            <h1>Add Product</h1>
+            <p>Fill in the details below to add a new product to the catalog.</p>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="alert" style="background:#fdecea;border:1px solid #f5c6cb;color:#c0392b;border-radius:var(--radius-sm);font-size:.85rem;"></div>
+
+            <!-- Basic Info -->
+            <div style="background:#fff;border:1px solid var(--clr-border);border-radius:var(--radius-md);padding:24px;margin-bottom:20px;">
+                <p style="font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--clr-muted);margin-bottom:18px;">Basic Information</p>
+
+                <div class="row g-3">
+                    <div class="col-md-8">
+                        <label asp-for="Name" class="form-label">Product Name</label>
+                        <input asp-for="Name" class="form-control" placeholder="e.g. Premium Leather Wallet" />
+                        <span asp-validation-for="Name" class="text-danger" style="font-size:.78rem;"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="SKU" class="form-label">SKU</label>
+                        <input asp-for="SKU" class="form-control" placeholder="e.g. ACC-WAL-007" />
+                        <span asp-validation-for="SKU" class="text-danger" style="font-size:.78rem;"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="CategoryId" class="form-label">Category</label>
+                        <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.Categories">
+                            <option value="">— Select Category —</option>
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger" style="font-size:.78rem;"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Brand" class="form-label">Brand</label>
+                        <input asp-for="Brand" class="form-control" placeholder="e.g. Nike, Maison K" />
+                        <span asp-validation-for="Brand" class="text-danger" style="font-size:.78rem;"></span>
+                    </div>
+                    <div class="col-12">
+                        <label asp-for="Description" class="form-label">Description</label>
+                        <textarea asp-for="Description" class="form-control" rows="5"
+                                  placeholder="Detailed product description, key features, materials, dimensions…"></textarea>
+                        <span asp-validation-for="Description" class="text-danger" style="font-size:.78rem;"></span>
                     </div>
                 </div>
-                <div class="card-body p-4">
-                    <form asp-action="Create" method="post" enctype="multipart/form-data">
-                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            </div>
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Name" class="form-label fw-semibold">Product Name</label>
-                                <input asp-for="Name" class="form-control" placeholder="e.g. Wireless Noise Cancelling Headphones" />
-                                <span asp-validation-for="Name" class="text-danger small"></span>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="SKU" class="form-label fw-semibold">SKU</label>
-                                <input asp-for="SKU" class="form-control" placeholder="e.g. HP-WN-009" />
-                                <span asp-validation-for="SKU" class="text-danger small"></span>
-                            </div>
-                        </div>
+            <!-- Pricing & Stock -->
+            <div style="background:#fff;border:1px solid var(--clr-border);border-radius:var(--radius-md);padding:24px;margin-bottom:20px;">
+                <p style="font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--clr-muted);margin-bottom:18px;">Pricing & Inventory</p>
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="CategoryId" class="form-label fw-semibold">Category</label>
-                                <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.Categories">
-                                    <option value="">-- Select Category --</option>
-                                </select>
-                                <span asp-validation-for="CategoryId" class="text-danger small"></span>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Brand" class="form-label fw-semibold">Brand</label>
-                                <input asp-for="Brand" class="form-control" placeholder="e.g. Sony, Nike" />
-                                <span asp-validation-for="Brand" class="text-danger small"></span>
-                            </div>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label asp-for="Price" class="form-label">Price ($)</label>
+                        <div class="input-group">
+                            <span class="input-group-text" style="font-size:.85rem;">$</span>
+                            <input asp-for="Price" class="form-control" type="number" step="0.01" min="0" placeholder="0.00" />
                         </div>
-
-                        <div class="mb-3">
-                            <label asp-for="Description" class="form-label fw-semibold">Description</label>
-                            <textarea asp-for="Description" class="form-control" rows="5" placeholder="Detailed product specifications, key features, etc..."></textarea>
-                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        <span asp-validation-for="Price" class="text-danger" style="font-size:.78rem;"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="Discount" class="form-label">Discount (%)</label>
+                        <div class="input-group">
+                            <input asp-for="Discount" class="form-control" type="number" step="0.01" min="0" max="100" placeholder="0" />
+                            <span class="input-group-text" style="font-size:.85rem;">%</span>
                         </div>
-
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label asp-for="Price" class="form-label fw-semibold">Price ($)</label>
-                                <input asp-for="Price" class="form-control" type="number" step="0.01" min="0" placeholder="0.00" />
-                                <span asp-validation-for="Price" class="text-danger small"></span>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label asp-for="Discount" class="form-label fw-semibold">Discount (%)</label>
-                                <input asp-for="Discount" class="form-control" type="number" step="0.01" min="0" max="100" placeholder="0.00" />
-                                <span asp-validation-for="Discount" class="text-danger small"></span>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label asp-for="StockQuantity" class="form-label fw-semibold">Stock Quantity</label>
-                                <input asp-for="StockQuantity" class="form-control" type="number" min="0" placeholder="0" />
-                                <span asp-validation-for="StockQuantity" class="text-danger small"></span>
-                            </div>
-                        </div>
-
-                        <div class="row mb-4 align-items-center">
-                            <div class="col-md-6 mb-3 mb-md-0">
-                                <label class="form-label fw-semibold">Product Images (Upload one or more)</label>
-                                <input type="file" name="imageFiles" class="form-control" accept="image/*" multiple />
-                                <span class="form-text text-muted">First uploaded image will be set as primary.</span>
-                            </div>
-                            <div class="col-md-6">
-                                <label asp-for="Status" class="form-label fw-semibold d-block">Status</label>
-                                <div class="form-check form-switch mt-2">
-                                    <input asp-for="Status" class="form-check-input" type="checkbox" role="switch" checked>
-                                    <label class="form-check-label text-muted" asp-for="Status">Active (Visible in shop front)</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary px-4 py-2.5 rounded-3 fw-bold bg-gradient shadow-sm">Save Product</button>
-                            <a asp-action="Index" class="btn btn-light px-4 py-2.5 rounded-3 fw-semibold">Cancel</a>
-                        </div>
-                    </form>
+                        <span asp-validation-for="Discount" class="text-danger" style="font-size:.78rem;"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="StockQuantity" class="form-label">Stock Quantity</label>
+                        <input asp-for="StockQuantity" class="form-control" type="number" min="0" placeholder="0" />
+                        <span asp-validation-for="StockQuantity" class="text-danger" style="font-size:.78rem;"></span>
+                    </div>
                 </div>
             </div>
+
+            <!-- Images & Status -->
+            <div style="background:#fff;border:1px solid var(--clr-border);border-radius:var(--radius-md);padding:24px;margin-bottom:24px;">
+                <p style="font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--clr-muted);margin-bottom:18px;">Images & Status</p>
+
+                <div class="row g-3 align-items-start">
+                    <div class="col-md-7">
+                        <label class="form-label">Product Images</label>
+                        <input type="file" name="imageFiles" class="form-control" accept="image/*" multiple />
+                        <p style="font-size:.76rem;color:var(--clr-muted);margin-top:5px;">
+                            <i class="fa fa-circle-info me-1"></i>You can select multiple files. The first image becomes the primary.
+                        </p>
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label">Visibility</label>
+                        <label style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid var(--clr-border);border-radius:var(--radius-sm);cursor:pointer;">
+                            <input asp-for="Status" type="checkbox" class="form-check-input m-0" role="switch" checked style="width:36px;height:20px;cursor:pointer;" />
+                            <div>
+                                <p style="margin:0;font-weight:600;font-size:.85rem;">Active</p>
+                                <p style="margin:0;font-size:.74rem;color:var(--clr-muted);">Visible in the storefront</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary px-5">
+                    <i class="fa fa-check me-2"></i>Save Product
+                </button>
+                <a asp-action="Index" class="btn btn-light px-4">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Tips sidebar -->
+    <div class="col-lg-4">
+        <div style="background:#fff;border:1px solid var(--clr-border);border-radius:var(--radius-md);padding:22px;position:sticky;top:72px;">
+            <p style="font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--clr-muted);margin-bottom:14px;">
+                <i class="fa fa-lightbulb me-1" style="color:var(--clr-gold);"></i>Tips
+            </p>
+            <ul style="font-size:.83rem;color:var(--clr-mid);line-height:1.7;padding-left:18px;margin:0;">
+                <li>Use a clear, descriptive product name that customers would search for.</li>
+                <li>SKU should be unique across all products.</li>
+                <li>A discount of <strong>0</strong> means no sale price.</li>
+                <li>Upload at least one image — the first one becomes the primary thumbnail.</li>
+                <li>Set status to <strong>Inactive</strong> to hide the product without deleting it.</li>
+            </ul>
         </div>
     </div>
 </div>

@@ -1,128 +1,176 @@
 @model E_com.Models.Product
 @{
     ViewData["Title"] = "Edit Product";
+    Layout = "_AdminLayout";
 }
 
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            <div class="card border-0 shadow-sm rounded-4">
-                <div class="card-header bg-white py-3 border-0">
-                    <div class="d-flex align-items-center">
-                        <a asp-action="Index" class="btn btn-sm btn-light rounded-circle me-3"><i class="fa fa-arrow-left"></i></a>
-                        <h4 class="mb-0 fw-bold text-dark">Edit Product</h4>
+<div class="admin-page-header">
+    <div style="display:flex;align-items:center;gap:12px;">
+        <a asp-action="Index" class="btn btn-light btn-sm" style="border-radius:50%;width:34px;height:34px;padding:0;display:inline-flex;align-items:center;justify-content:center;">
+            <i class="fa fa-arrow-left" style="font-size:.8rem;"></i>
+        </a>
+        <div>
+            <h1>Edit Product</h1>
+            <p style="font-size:.83rem;color:var(--clr-muted);margin:2px 0 0;">SKU: <code style="font-size:.78rem;">@Model.SKU</code></p>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="CreatedDate" />
+            <div asp-validation-summary="ModelOnly" class="alert" style="background:#fdecea;border:1px solid #f5c6cb;color:#c0392b;border-radius:var(--radius-sm);font-size:.85rem;"></div>
+
+            <!-- Basic Info -->
+            <div style="background:#fff;border:1px solid var(--clr-border);border-radius:var(--radius-md);padding:24px;margin-bottom:20px;">
+                <p style="font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--clr-muted);margin-bottom:18px;">Basic Information</p>
+                <div class="row g-3">
+                    <div class="col-md-8">
+                        <label asp-for="Name" class="form-label">Product Name</label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger" style="font-size:.78rem;"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="SKU" class="form-label">SKU</label>
+                        <input asp-for="SKU" class="form-control" />
+                        <span asp-validation-for="SKU" class="text-danger" style="font-size:.78rem;"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="CategoryId" class="form-label">Category</label>
+                        <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.Categories">
+                            <option value="">— Select Category —</option>
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger" style="font-size:.78rem;"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Brand" class="form-label">Brand</label>
+                        <input asp-for="Brand" class="form-control" />
+                        <span asp-validation-for="Brand" class="text-danger" style="font-size:.78rem;"></span>
+                    </div>
+                    <div class="col-12">
+                        <label asp-for="Description" class="form-label">Description</label>
+                        <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+                        <span asp-validation-for="Description" class="text-danger" style="font-size:.78rem;"></span>
                     </div>
                 </div>
-                <div class="card-body p-4">
-                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
-                        <input type="hidden" asp-for="Id" />
-                        <input type="hidden" asp-for="CreatedDate" />
+            </div>
 
-                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Name" class="form-label fw-semibold">Product Name</label>
-                                <input asp-for="Name" class="form-control" />
-                                <span asp-validation-for="Name" class="text-danger small"></span>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="SKU" class="form-label fw-semibold">SKU</label>
-                                <input asp-for="SKU" class="form-control" />
-                                <span asp-validation-for="SKU" class="text-danger small"></span>
-                            </div>
+            <!-- Pricing & Stock -->
+            <div style="background:#fff;border:1px solid var(--clr-border);border-radius:var(--radius-md);padding:24px;margin-bottom:20px;">
+                <p style="font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--clr-muted);margin-bottom:18px;">Pricing & Inventory</p>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label asp-for="Price" class="form-label">Price ($)</label>
+                        <div class="input-group">
+                            <span class="input-group-text" style="font-size:.85rem;">$</span>
+                            <input asp-for="Price" class="form-control" type="number" step="0.01" min="0" />
                         </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="CategoryId" class="form-label fw-semibold">Category</label>
-                                <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.Categories">
-                                    <option value="">-- Select Category --</option>
-                                </select>
-                                <span asp-validation-for="CategoryId" class="text-danger small"></span>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Brand" class="form-label fw-semibold">Brand</label>
-                                <input asp-for="Brand" class="form-control" />
-                                <span asp-validation-for="Brand" class="text-danger small"></span>
-                            </div>
+                        <span asp-validation-for="Price" class="text-danger" style="font-size:.78rem;"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="Discount" class="form-label">Discount (%)</label>
+                        <div class="input-group">
+                            <input asp-for="Discount" class="form-control" type="number" step="0.01" min="0" max="100" />
+                            <span class="input-group-text" style="font-size:.85rem;">%</span>
                         </div>
+                        <span asp-validation-for="Discount" class="text-danger" style="font-size:.78rem;"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="StockQuantity" class="form-label">Stock Quantity</label>
+                        <input asp-for="StockQuantity" class="form-control" type="number" min="0" />
+                        <span asp-validation-for="StockQuantity" class="text-danger" style="font-size:.78rem;"></span>
+                    </div>
+                </div>
+            </div>
 
-                        <div class="mb-3">
-                            <label asp-for="Description" class="form-label fw-semibold">Description</label>
-                            <textarea asp-for="Description" class="form-control" rows="5"></textarea>
-                            <span asp-validation-for="Description" class="text-danger small"></span>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label asp-for="Price" class="form-label fw-semibold">Price ($)</label>
-                                <input asp-for="Price" class="form-control" type="number" step="0.01" min="0" />
-                                <span asp-validation-for="Price" class="text-danger small"></span>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label asp-for="Discount" class="form-label fw-semibold">Discount (%)</label>
-                                <input asp-for="Discount" class="form-control" type="number" step="0.01" min="0" max="100" />
-                                <span asp-validation-for="Discount" class="text-danger small"></span>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label asp-for="StockQuantity" class="form-label fw-semibold">Stock Quantity</label>
-                                <input asp-for="StockQuantity" class="form-control" type="number" min="0" />
-                                <span asp-validation-for="StockQuantity" class="text-danger small"></span>
-                            </div>
-                        </div>
-
-                        <div class="row mb-4 align-items-center">
-                            <div class="col-md-6 mb-3 mb-md-0">
-                                <label class="form-label fw-semibold">Upload More Images</label>
-                                <input type="file" name="imageFiles" class="form-control" accept="image/*" multiple />
-                            </div>
-                            <div class="col-md-6">
-                                <label asp-for="Status" class="form-label fw-semibold d-block">Status</label>
-                                <div class="form-check form-switch mt-2">
-                                    <input asp-for="Status" class="form-check-input" type="checkbox" role="switch">
-                                    <label class="form-check-label text-muted" asp-for="Status">Active (Visible in shop front)</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Current Images Display -->
-                        @if (Model.ProductImages != null && Model.ProductImages.Any())
+            <!-- Current Images -->
+            @if (Model.ProductImages != null && Model.ProductImages.Any())
+            {
+                <div style="background:#fff;border:1px solid var(--clr-border);border-radius:var(--radius-md);padding:24px;margin-bottom:20px;">
+                    <p style="font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--clr-muted);margin-bottom:16px;">Current Images</p>
+                    <div class="row g-3">
+                        @foreach (var img in Model.ProductImages)
                         {
-                            <div class="mb-4">
-                                <label class="form-label fw-semibold d-block">Current Images</label>
-                                <div class="row g-3">
-                                    @foreach (var img in Model.ProductImages)
+                            <div class="col-6 col-md-3">
+                                <div style="position:relative;border:1px solid var(--clr-border);border-radius:var(--radius-sm);overflow:hidden;aspect-ratio:1/1;">
+                                    <img src="@img.ImagePath" style="width:100%;height:100%;object-fit:cover;" alt="Product image"
+                                         onerror="this.src='https://placehold.co/120x120?text=IMG'" />
+                                    @if (img.IsPrimary)
                                     {
-                                        <div class="col-6 col-md-3 col-lg-2">
-                                            <div class="position-relative border rounded-3 overflow-hidden shadow-sm" style="height: 120px;">
-                                                <img src="@img.ImagePath" class="w-100 h-100 object-fit-cover" alt="Product Image" />
-                                                
-                                                <!-- Badges and Actions -->
-                                                @if (img.IsPrimary)
-                                                {
-                                                    <span class="position-absolute top-0 start-0 m-1 badge bg-primary small">Primary</span>
-                                                }
-                                                <button type="submit" class="position-absolute top-0 end-0 m-1 btn btn-xs btn-danger p-1 rounded-circle shadow-sm"
-                                                        asp-action="DeleteImage" asp-route-imageId="@img.Id" asp-route-productId="@Model.Id" 
-                                                        onclick="return confirm('Are you sure you want to delete this image?');"
-                                                        title="Delete Image" style="width: 24px; height: 24px; line-height: 12px; font-size: 10px;">
-                                                    <i class="fa fa-times"></i>
-                                                </button>
-                                            </div>
-                                        </div>
+                                        <span style="position:absolute;top:6px;left:6px;font-size:.6rem;font-weight:700;background:var(--clr-black);color:#fff;padding:2px 7px;border-radius:4px;">PRIMARY</span>
                                     }
+                                    <form asp-action="DeleteImage" asp-route-imageId="@img.Id" asp-route-productId="@Model.Id" method="post"
+                                          onsubmit="return confirm('Remove this image?');"
+                                          style="position:absolute;top:6px;right:6px;">
+                                        <button type="submit" style="width:24px;height:24px;border-radius:50%;border:0;background:rgba(192,57,43,.9);color:#fff;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:.65rem;">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         }
+                    </div>
+                </div>
+            }
 
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary px-4 py-2.5 rounded-3 fw-bold bg-gradient shadow-sm">Save Changes</button>
-                            <a asp-action="Index" class="btn btn-light px-4 py-2.5 rounded-3 fw-semibold">Cancel</a>
-                        </div>
-                    </form>
+            <!-- Upload More & Status -->
+            <div style="background:#fff;border:1px solid var(--clr-border);border-radius:var(--radius-md);padding:24px;margin-bottom:24px;">
+                <p style="font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--clr-muted);margin-bottom:18px;">Add More Images & Status</p>
+                <div class="row g-3 align-items-start">
+                    <div class="col-md-7">
+                        <label class="form-label">Upload More Images</label>
+                        <input type="file" name="imageFiles" class="form-control" accept="image/*" multiple />
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label">Visibility</label>
+                        <label style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid var(--clr-border);border-radius:var(--radius-sm);cursor:pointer;">
+                            <input asp-for="Status" type="checkbox" class="form-check-input m-0" role="switch" style="width:36px;height:20px;cursor:pointer;" />
+                            <div>
+                                <p style="margin:0;font-weight:600;font-size:.85rem;">Active</p>
+                                <p style="margin:0;font-size:.74rem;color:var(--clr-muted);">Visible in the storefront</p>
+                            </div>
+                        </label>
+                    </div>
                 </div>
             </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary px-5">
+                    <i class="fa fa-check me-2"></i>Save Changes
+                </button>
+                <a asp-action="Index" class="btn btn-light px-4">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Info sidebar -->
+    <div class="col-lg-4">
+        <div style="background:#fff;border:1px solid var(--clr-border);border-radius:var(--radius-md);padding:22px;position:sticky;top:72px;">
+            <p style="font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--clr-muted);margin-bottom:14px;">Product Info</p>
+            <div style="font-size:.83rem;color:var(--clr-mid);">
+                <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f4f2ef;">
+                    <span>Created</span>
+                    <strong style="color:var(--clr-black);">@Model.CreatedDate.ToString("MMM dd, yyyy")</strong>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f4f2ef;">
+                    <span>Current Price</span>
+                    <strong style="color:var(--clr-black);">$@Model.DiscountedPrice.ToString("F2")</strong>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f4f2ef;">
+                    <span>Stock</span>
+                    <strong style="color:@(Model.StockQuantity <= 10 ? "#c0392b" : "var(--clr-black)");">@Model.StockQuantity units</strong>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:8px 0;">
+                    <span>Images</span>
+                    <strong style="color:var(--clr-black);">@Model.ProductImages.Count</strong>
+                </div>
+            </div>
+            <a asp-controller="Shop" asp-action="Details" asp-route-id="@Model.Id" target="_blank"
+               class="btn btn-light w-100 mt-3" style="font-size:.8rem;">
+                <i class="fa fa-arrow-up-right-from-square me-2"></i>View in Store
+            </a>
         </div>
     </div>
 </div>

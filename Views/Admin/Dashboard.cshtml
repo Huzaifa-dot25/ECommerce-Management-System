@@ -1,0 +1,174 @@
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "_AdminLayout";
+    var lowStockItems  = ViewBag.LowStockItems  as List<E_com.Models.Product> ?? new();
+    var recentProducts = ViewBag.RecentProducts as List<E_com.Models.Product> ?? new();
+}
+
+<!-- Stat cards -->
+<div class="row g-4 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-card__icon" style="background:#f0ede8;">
+                <i class="fa fa-box" style="color:var(--clr-black);"></i>
+            </div>
+            <div>
+                <p class="stat-card__label">Total Products</p>
+                <p class="stat-card__value">@ViewBag.TotalProducts</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-card__icon" style="background:#e8f5e9;">
+                <i class="fa fa-circle-check" style="color:#2d8a4e;"></i>
+            </div>
+            <div>
+                <p class="stat-card__label">Active Products</p>
+                <p class="stat-card__value">@ViewBag.ActiveProducts</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-card__icon" style="background:#fef3e2;">
+                <i class="fa fa-tag" style="color:#b8963e;"></i>
+            </div>
+            <div>
+                <p class="stat-card__label">Categories</p>
+                <p class="stat-card__value">@ViewBag.TotalCategories</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-card__icon" style="background:#fdecea;">
+                <i class="fa fa-triangle-exclamation" style="color:#c0392b;"></i>
+            </div>
+            <div>
+                <p class="stat-card__label">Low Stock</p>
+                <p class="stat-card__value">@ViewBag.LowStockCount</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick actions -->
+<div class="row g-3 mb-4">
+    <div class="col-12">
+        <div style="background:#fff;border:1px solid var(--clr-border);border-radius:var(--radius-md);padding:18px 22px;">
+            <p style="font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--clr-muted);margin-bottom:14px;">Quick Actions</p>
+            <div class="d-flex flex-wrap gap-2">
+                <a asp-controller="Product" asp-action="Create" class="btn btn-primary">
+                    <i class="fa fa-plus me-2"></i>Add Product
+                </a>
+                <a asp-controller="Category" asp-action="Create" class="btn btn-outline-primary">
+                    <i class="fa fa-plus me-2"></i>Add Category
+                </a>
+                <a asp-controller="Product" asp-action="Index" class="btn btn-light">
+                    <i class="fa fa-list me-2"></i>All Products
+                </a>
+                <a asp-controller="Category" asp-action="Index" class="btn btn-light">
+                    <i class="fa fa-tags me-2"></i>All Categories
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Recent Products -->
+    <div class="col-lg-8">
+        <div style="background:#fff;border:1px solid var(--clr-border);border-radius:var(--radius-md);overflow:hidden;">
+            <div style="padding:16px 22px;border-bottom:1px solid var(--clr-border);display:flex;justify-content:space-between;align-items:center;">
+                <p style="font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--clr-muted);margin:0;">Recent Products</p>
+                <a asp-controller="Product" asp-action="Index" style="font-size:.75rem;font-weight:600;color:var(--clr-muted);text-decoration:none;">View All →</a>
+            </div>
+            <table class="table admin-table mb-0">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in recentProducts)
+                    {
+                        var img = p.ProductImages.FirstOrDefault(i => i.IsPrimary) ?? p.ProductImages.FirstOrDefault();
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <img src="@(img != null ? img.ImagePath : "https://placehold.co/40x40?text=P")"
+                                         style="width:36px;height:36px;border-radius:var(--radius-sm);object-fit:cover;border:1px solid var(--clr-border);"
+                                         onerror="this.src='https://placehold.co/40x40?text=P'" alt="@p.Name" />
+                                    <div>
+                                        <p style="margin:0;font-weight:600;font-size:.85rem;color:var(--clr-black);">@p.Name</p>
+                                        <p style="margin:0;font-size:.72rem;color:var(--clr-muted);">@p.Brand</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="font-size:.83rem;color:var(--clr-mid);">@(p.Category?.Name ?? "—")</td>
+                            <td style="font-size:.85rem;font-weight:600;">$@p.DiscountedPrice.ToString("F2")</td>
+                            <td>
+                                @if (p.StockQuantity <= 0)
+                                {
+                                    <span style="font-size:.72rem;background:#fdecea;color:#c0392b;padding:3px 10px;border-radius:50px;font-weight:600;">Out of Stock</span>
+                                }
+                                else if (p.StockQuantity <= 10)
+                                {
+                                    <span style="font-size:.72rem;background:#fef3e2;color:#b8963e;padding:3px 10px;border-radius:50px;font-weight:600;">Low (@p.StockQuantity)</span>
+                                }
+                                else
+                                {
+                                    <span style="font-size:.83rem;color:var(--clr-mid);">@p.StockQuantity</span>
+                                }
+                            </td>
+                            <td>
+                                <a asp-controller="Product" asp-action="Edit" asp-route-id="@p.Id"
+                                   style="font-size:.75rem;font-weight:600;color:var(--clr-black);text-decoration:none;">Edit</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Low Stock alert -->
+    <div class="col-lg-4">
+        <div style="background:#fff;border:1px solid var(--clr-border);border-radius:var(--radius-md);overflow:hidden;">
+            <div style="padding:16px 22px;border-bottom:1px solid var(--clr-border);">
+                <p style="font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--clr-muted);margin:0;">
+                    <i class="fa fa-triangle-exclamation me-1" style="color:#c0392b;"></i>Low Stock Alerts
+                </p>
+            </div>
+            @if (!lowStockItems.Any())
+            {
+                <div style="padding:28px;text-align:center;color:var(--clr-muted);font-size:.85rem;">
+                    <i class="fa fa-check-circle d-block mb-2" style="font-size:1.5rem;color:#2d8a4e;"></i>
+                    All products are well stocked.
+                </div>
+            }
+            else
+            {
+                <div style="padding:8px 0;">
+                    @foreach (var p in lowStockItems)
+                    {
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 22px;border-bottom:1px solid #f4f2ef;">
+                            <div>
+                                <p style="margin:0;font-size:.84rem;font-weight:600;color:var(--clr-black);">@p.Name</p>
+                                <p style="margin:0;font-size:.72rem;color:var(--clr-muted);">@(p.Category?.Name ?? "—")</p>
+                            </div>
+                            <span style="font-size:.75rem;background:#fdecea;color:#c0392b;padding:3px 10px;border-radius:50px;font-weight:700;">
+                                @p.StockQuantity left
+                            </span>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
